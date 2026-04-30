@@ -56,6 +56,7 @@ export async function POST(req: NextRequest) {
 
     const slug = slugify(body.slug || body.title, { lower: true, strict: true });
 
+    // Ensure unique slug
     const exists = await Article.findOne({ slug });
     const finalSlug = exists ? `${slug}-${Date.now()}` : slug;
 
