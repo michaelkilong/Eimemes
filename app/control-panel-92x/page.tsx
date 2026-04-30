@@ -1,12 +1,9 @@
 'use client';
-// app/control-panel-92x/page.tsx
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { Eye, EyeOff, Lock } from 'lucide-react';
 
 export default function AdminLoginPage() {
-  const router = useRouter();
   const [form, setForm] = useState({ email: '', password: '' });
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -23,7 +20,7 @@ export default function AdminLoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
       toast.success(`Welcome back, ${data.user.name}!`);
-      router.push('/control-panel-92x/dashboard');
+      window.location.href = '/control-panel-92x/dashboard';
     } catch (err: any) {
       toast.error(err.message || 'Login failed');
     } finally {
@@ -38,7 +35,6 @@ export default function AdminLoginPage() {
   return (
     <div className="min-h-screen bg-[#0d0f14] flex items-center justify-center p-6">
       <div className="w-full max-w-md">
-        {/* Logo */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-3 mb-6">
             <div className="w-10 h-10 bg-[#d97706] rounded-sm flex items-center justify-center">
@@ -51,7 +47,6 @@ export default function AdminLoginPage() {
 
         <div className="bg-[#13171f] border border-[#1e2433] rounded-sm p-8">
           <h1 className="text-white font-display text-xl font-bold mb-6">Sign in</h1>
-
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
               <label className="block text-xs font-mono uppercase tracking-wider text-slate-500 mb-2">Email</label>
@@ -63,7 +58,6 @@ export default function AdminLoginPage() {
                 onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
               />
             </div>
-
             <div>
               <label className="block text-xs font-mono uppercase tracking-wider text-slate-500 mb-2">Password</label>
               <div className="relative">
@@ -83,7 +77,6 @@ export default function AdminLoginPage() {
                 </button>
               </div>
             </div>
-
             <button
               type="submit" disabled={loading}
               className="w-full bg-[#d97706] hover:bg-[#b45309] text-white font-semibold py-3 rounded-sm
