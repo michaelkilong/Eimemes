@@ -22,12 +22,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid file type. Allowed: JPEG, PNG, WebP, GIF' }, { status: 415 });
     }
 
-    // Ensure upload directory exists
     await mkdir(UPLOAD_DIR, { recursive: true });
 
-    const ext       = file.name.split('.').pop() || 'jpg';
-    const safeName  = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const buffer    = Buffer.from(await file.arrayBuffer());
+    const ext      = file.name.split('.').pop() || 'jpg';
+    const safeName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const buffer   = Buffer.from(await file.arrayBuffer());
 
     await writeFile(path.join(UPLOAD_DIR, safeName), buffer);
 
@@ -38,5 +37,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
   }
 }
-
-export const config = { api: { bodyParser: false } };
