@@ -23,7 +23,7 @@ export default function AdminLoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
       toast.success(`Welcome back, ${data.user.name}!`);
-      window.location.href = '/control-panel-92x/dashboard';
+      router.push('/control-panel-92x/dashboard');
     } catch (err: any) {
       toast.error(err.message || 'Login failed');
     } finally {
