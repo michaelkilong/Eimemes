@@ -1,12 +1,16 @@
 // app/api/upload/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
+import { v2 as cloudinary } from 'cloudinary';
 import { requireAuth, unauthorized } from '@/lib/auth';
 
-const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
-const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key:    process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+const MAX_SIZE    = 10 * 1024 * 1024; // 10MB
+const ALLOWED     = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
 export async function POST(req: NextRequest) {
   const auth = requireAuth(req);
@@ -16,22 +20,31 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
 
-    if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 });
-    if (file.size > MAX_SIZE) return NextResponse.json({ error: 'File too large (max 10MB)' }, { status: 413 });
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return NextResponse.json({ error: 'Invalid file type. Allowed: JPEG, PNG, WebP, GIF' }, { status: 415 });
+    if (!file) {
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+    }
+    if (file.size > MAX_SIZE) {
+      return NextResponse.json({ error: 'File too large (max 10MB)' }, { status: 413 });
+    }
+    if (!ALLOWED.includes(file.type)) {
+      return NextResponse.json({ error: 'Invalid file type' }, { status: 415 });
     }
 
-    await mkdir(UPLOAD_DIR, { recursive: true });
+    // Convert file to base64
+    const bytes  = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
 
-    const ext      = file.name.split('.').pop() || 'jpg';
-    const safeName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const buffer   = Buffer.from(await file.arrayBuffer());
+    // Upload to Cloudinary
+    const result = await cloudinary.uploader.upload(base64, {
+      folder: 'eimemes',
+      resource_type: 'image',
+    });
 
-    await writeFile(path.join(UPLOAD_DIR, safeName), buffer);
-
-    const url = `/uploads/${safeName}`;
-    return NextResponse.json({ url, name: safeName });
+    return NextResponse.json({
+      url:  result.secure_url,
+      name: result.public_id,
+    });
   } catch (err) {
     console.error('[UPLOAD]', err);
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
