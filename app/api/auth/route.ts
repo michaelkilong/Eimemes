@@ -1,11 +1,9 @@
-// app/api/auth/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { connectDB } from '@/lib/mongodb';
 import { AdminUser } from '@/lib/models/index';
 import { signToken, requireAuth } from '@/lib/auth';
 
-// POST /api/auth — login
 export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json();
@@ -27,14 +25,18 @@ export async function POST(req: NextRequest) {
     }
 
     if (user.active === false) {
-      return NextResponse.json({ error: 'Account has been deactivated. Contact your super admin.' }, { status: 403 });
+      return NextResponse.json({ error: 'Account has been deactivated.' }, { status: 403 });
     }
 
-    // Update last login
     user.lastLogin = new Date();
     await user.save();
 
-    const token = signToken({ userId: user._id.toString(), email: user.email, role: user.role, name: user.name });
+    const token = signToken({
+      userId: user._id.toString(),
+      email: user.email,
+      role: user.role,
+      name: user.name,
+    });
 
     const response = NextResponse.json({
       success: true,
@@ -44,8 +46,8 @@ export async function POST(req: NextRequest) {
     response.cookies.set('admin_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7,
       path: '/',
     });
 
@@ -56,14 +58,12 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// DELETE /api/auth — logout
 export async function DELETE() {
   const response = NextResponse.json({ success: true });
   response.cookies.delete('admin_token');
   return response;
 }
 
-// GET /api/auth — check session
 export async function GET(req: NextRequest) {
   const payload = requireAuth(req);
   if (!payload) return NextResponse.json({ authenticated: false }, { status: 401 });
