@@ -4,14 +4,12 @@ import { verifyToken } from '@/lib/auth';
 
 const ADMIN_PREFIX = '/control-panel-92x';
 
-// Routes only superadmin can access
 const SUPERADMIN_ONLY = [
   '/control-panel-92x/team',
   '/control-panel-92x/gallery',
   '/control-panel-92x/messages',
 ];
 
-// Public admin routes (no auth needed)
 const PUBLIC_ADMIN = [
   '/control-panel-92x',
   '/control-panel-92x/',
@@ -21,9 +19,9 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   if (!pathname.startsWith(ADMIN_PREFIX)) return NextResponse.next();
-  if (PUBLIC_ADMIN.includes(pathname)) return NextResponse.next();
 
-  // Verify JWT cookie
+  if (PUBLIC_ADMIN.some(p => pathname === p)) return NextResponse.next();
+
   const token = req.cookies.get('admin_token')?.value;
   if (!token) {
     return NextResponse.redirect(new URL(ADMIN_PREFIX, req.url));
@@ -36,7 +34,6 @@ export function middleware(req: NextRequest) {
     return res;
   }
 
-  // Superadmin-only route check
   const isSuperAdminRoute = SUPERADMIN_ONLY.some(p => pathname.startsWith(p));
   if (isSuperAdminRoute && payload.role !== 'superadmin') {
     return NextResponse.redirect(
@@ -44,7 +41,6 @@ export function middleware(req: NextRequest) {
     );
   }
 
-  // Pass user info via headers
   const response = NextResponse.next();
   response.headers.set('x-user-id',   payload.userId);
   response.headers.set('x-user-role', payload.role);
