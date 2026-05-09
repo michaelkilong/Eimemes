@@ -18,13 +18,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     await connectDB();
     const article = await Article.findOne({ slug: params.slug, status: 'published' }).lean();
     if (!article) return { title: 'Not Found' };
+
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://eimemes.vercel.app';
+    const ogImage = article.coverImage
+      ? article.coverImage.startsWith('http')
+        ? article.coverImage
+        : `${siteUrl}${article.coverImage}`
+      : `${siteUrl}/og-default.png`;
+
     return {
       title: article.seoTitle || article.title,
       description: article.seoDescription || article.summary,
       openGraph: {
         title: article.title,
         description: article.summary,
-        images: article.coverImage ? [{ url: article.coverImage }] : [],
+        type: 'article',
+        url: `${siteUrl}/article/${article.slug}`,
+        images: [{ url: ogImage, width: 1200, height: 630, alt: article.title }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: article.title,
+        description: article.summary,
+        images: [ogImage],
       },
     };
   } catch { return { title: 'Article' }; }
