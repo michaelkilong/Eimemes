@@ -1,32 +1,32 @@
 'use client';
-// app/control-panel-92x/blogs/page.tsx
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { Plus, Edit2, Trash2, Eye, Search, Clock } from 'lucide-react';
 import AdminSidebar from '@/components/admin/AdminSidebar';
-import { formatDistanceToNow } from 'date-fns';
 
 export default function AdminBlogsPage() {
   const router = useRouter();
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts]     = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState('all');
+  const [search, setSearch]   = useState('');
+  const [filter, setFilter]   = useState('all');
+  const [role, setRole]       = useState('');
 
   const load = async () => {
     setLoading(true);
     try {
+      const authRes  = await fetch('/api/auth', { credentials: 'include' });
+      const authData = await authRes.json();
+      if (!authRes.ok) { router.push('/control-panel-92x'); return; }
+      setRole(authData.user?.role || '');
       const params = new URLSearchParams();
       if (filter !== 'all') params.set('status', filter);
-      const res = await fetch(`/api/blogs?${params}&limit=50`, { credentials: 'include' });
-      if (!res.ok) { router.push('/control-panel-92x'); return; }
+      const res  = await fetch(`/api/blogs?${params}&limit=50`, { credentials: 'include' });
       const data = await res.json();
       setPosts(data.posts || []);
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   useEffect(() => { load(); }, [filter]);
@@ -71,7 +71,7 @@ export default function AdminBlogsPage() {
           </Link>
         </div>
 
-        <div className="p-8">
+        <div className="p-6">
           <div className="flex flex-col sm:flex-row gap-4 mb-6">
             <div className="relative flex-1">
               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
@@ -86,10 +86,8 @@ export default function AdminBlogsPage() {
               {['all', 'published', 'draft'].map(f => (
                 <button key={f} onClick={() => setFilter(f)}
                   className={`px-4 py-2 rounded-sm text-xs font-mono uppercase tracking-wide transition-all ${
-                    filter === f ? 'bg-[#d97706] text-white' : 'bg-[#13171f] border border-[#2a2f3d] text-slate-400 hover:border-[#d97706] hover:text-white'
-                  }`}>
-                  {f}
-                </button>
+                    filter === f ? 'bg-[#d97706] text-white' : 'bg-[#13171f] border border-[#2a2f3d] text-slate-400 hover:border-[#d97706]'
+                  }`}>{f}</button>
               ))}
             </div>
           </div>
@@ -105,55 +103,44 @@ export default function AdminBlogsPage() {
                 </Link>
               </div>
             ) : (
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-[#1e2433]">
-                    {['Title', 'Author', 'Read time', 'Status', 'Date', 'Actions'].map(h => (
-                      <th key={h} className="px-5 py-3 text-left text-[10px] font-mono uppercase tracking-widest text-slate-500">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#1e2433]">
-                  {filtered.map(post => (
-                    <tr key={post._id} className="hover:bg-[#1a1f2b] transition-colors group">
-                      <td className="px-5 py-3.5 max-w-xs">
-                        <span className="text-sm text-slate-200 truncate block">{post.title}</span>
-                      </td>
-                      <td className="px-5 py-3.5 text-xs text-slate-400 font-mono">{post.author}</td>
-                      <td className="px-5 py-3.5">
-                        <span className="text-xs text-slate-400 font-mono flex items-center gap-1">
-                          <Clock size={10} /> {post.readTime}m
-                        </span>
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <button onClick={() => toggleStatus(post)}>
-                          <span className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-sm font-bold cursor-pointer ${
-                            post.status === 'published' ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20' : 'bg-slate-700/40 text-slate-400 border border-slate-600/20'
-                          }`}>{post.status}</span>
+              <div className="divide-y divide-[#1e2433]">
+                {filtered.map(post => (
+                  <div key={post._id} className="p-4 flex flex-col gap-3">
+                    <span className="text-sm text-slate-200 font-medium">{post.title}</span>
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <span className="text-xs text-slate-500 font-mono">{post.author}</span>
+                      <span className="text-xs text-slate-500 font-mono flex items-center gap-1">
+                        <Clock size={10} /> {post.readTime}m
+                      </span>
+                      <button onClick={() => toggleStatus(post)}>
+                        <span className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-sm font-bold ${
+                          post.status === 'published'
+                            ? 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20'
+                            : 'bg-slate-700/40 text-slate-400 border border-slate-600/20'
+                        }`}>{post.status}</span>
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {post.status === 'published' && (
+                        <a href={`/blog/${post.slug}`} target="_blank"
+                          className="flex items-center gap-1 px-3 py-1.5 rounded-sm text-xs font-mono border border-[#2a2f3d] text-slate-400 hover:text-white transition-all">
+                          <Eye size={12} /> View
+                        </a>
+                      )}
+                      <Link href={`/control-panel-92x/blogs/${post._id}`}
+                        className="flex items-center gap-1 px-3 py-1.5 rounded-sm text-xs font-mono border border-[#2a2f3d] text-slate-400 hover:text-[#d97706] hover:border-[#d97706]/40 transition-all">
+                        <Edit2 size={12} /> Edit
+                      </Link>
+                      {role === 'superadmin' && (
+                        <button onClick={() => handleDelete(post._id, post.title)}
+                          className="flex items-center gap-1 px-3 py-1.5 rounded-sm text-xs font-mono border border-[#2a2f3d] text-red-400 hover:bg-red-500/10 hover:border-red-500/30 transition-all">
+                          <Trash2 size={12} /> Delete
                         </button>
-                      </td>
-                      <td className="px-5 py-3.5 text-xs text-slate-500 font-mono">
-                        {formatDistanceToNow(new Date(post.createdAt), { addSuffix: true })}
-                      </td>
-                      <td className="px-5 py-3.5">
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                          {post.status === 'published' && (
-                            <a href={`/blog/${post.slug}`} target="_blank" className="p-1.5 text-slate-500 hover:text-white">
-                              <Eye size={14} />
-                            </a>
-                          )}
-                          <Link href={`/control-panel-92x/blogs/${post._id}`} className="p-1.5 text-slate-500 hover:text-[#d97706]">
-                            <Edit2 size={14} />
-                          </Link>
-                          <button onClick={() => handleDelete(post._id, post.title)} className="p-1.5 text-slate-500 hover:text-red-400">
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </div>
