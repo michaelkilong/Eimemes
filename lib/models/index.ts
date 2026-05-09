@@ -1,5 +1,6 @@
-// lib/models/GalleryItem.ts
 import mongoose, { Schema, Document, Model } from 'mongoose';
+
+// ─── GalleryItem ──────────────────────────────────────────────────────────────
 
 export interface IGalleryItem extends Document {
   title: string;
@@ -87,3 +88,34 @@ AdminUserSchema.index({ email: 1 });
 
 export const AdminUser: Model<IAdminUser> =
   mongoose.models.AdminUser || mongoose.model<IAdminUser>('AdminUser', AdminUserSchema);
+
+// ─── Comment ──────────────────────────────────────────────────────────────────
+
+export interface IComment extends Document {
+  name: string;
+  email: string;
+  comment: string;
+  postId: string;
+  postType: 'article' | 'blog';
+  postSlug: string;
+  postTitle: string;
+  createdAt: Date;
+}
+
+const CommentSchema = new Schema<IComment>(
+  {
+    name:      { type: String, required: true, trim: true },
+    email:     { type: String, required: true, trim: true, lowercase: true },
+    comment:   { type: String, required: true, trim: true, maxlength: 1000 },
+    postId:    { type: String, required: true },
+    postType:  { type: String, enum: ['article', 'blog'], required: true },
+    postSlug:  { type: String, required: true },
+    postTitle: { type: String, required: true },
+  },
+  { timestamps: true }
+);
+
+CommentSchema.index({ postId: 1, createdAt: -1 });
+
+export const Comment: Model<IComment> =
+  mongoose.models.Comment || mongoose.model<IComment>('Comment', CommentSchema);
