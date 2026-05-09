@@ -21,6 +21,8 @@ export default function AboutPage() {
             <h1 className="font-display text-5xl font-bold text-white mb-5">About Eimemes</h1>
             <p className="text-slate-400 max-w-xl mx-auto leading-relaxed">
               “EIMEMES - bringing all Eimi Youths closer”
+              <br>
+              </br>
               Eimi te adim, Eimemes a um e!
             </p>
           </div>
