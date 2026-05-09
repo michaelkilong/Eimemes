@@ -188,3 +188,46 @@ body {
 .delay-100 { animation-delay: 0.1s; }
 .delay-200 { animation-delay: 0.2s; }
 .delay-300 { animation-delay: 0.3s; }
+
+/* ─── TipTap Table ───────────────────────────────────── */
+.tiptap-wrapper .ProseMirror table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+  overflow: hidden;
+  border-radius: 4px;
+}
+.tiptap-wrapper .ProseMirror td,
+.tiptap-wrapper .ProseMirror th {
+  border: 1px solid #e5e0d8;
+  padding: 0.6rem 0.9rem;
+  text-align: left;
+  font-size: 0.9rem;
+  vertical-align: top;
+  min-width: 80px;
+  position: relative;
+}
+.tiptap-wrapper .ProseMirror th {
+  background: #f0ece4;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #4b4540;
+}
+.tiptap-wrapper .ProseMirror .selectedCell:after {
+  background: rgba(217, 119, 6, 0.15);
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.tiptap-wrapper .ProseMirror .column-resize-handle {
+  background-color: #d97706;
+  bottom: -2px;
+  position: absolute;
+  right: -2px;
+  pointer-events: none;
+  top: 0;
+  width: 3px;
+}
