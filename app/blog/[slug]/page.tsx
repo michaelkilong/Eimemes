@@ -17,7 +17,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     await connectDB();
     const post = await BlogPost.findOne({ slug: params.slug, status: 'published' }).lean();
     if (!post) return { title: 'Not Found' };
-    return { title: post.title, description: post.excerpt };
+
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://eimemes.vercel.app';
+    const ogImage = post.coverImage
+      ? post.coverImage.startsWith('http')
+        ? post.coverImage
+        : `${siteUrl}${post.coverImage}`
+      : `${siteUrl}/og-default.png`;
+
+    return {
+      title: post.title,
+      description: post.excerpt,
+      openGraph: {
+        title: post.title,
+        description: post.excerpt,
+        type: 'article',
+        url: `${siteUrl}/blog/${post.slug}`,
+        images: [{ url: ogImage, width: 1200, height: 630, alt: post.title }],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: post.title,
+        description: post.excerpt,
+        images: [ogImage],
+      },
+    };
   } catch { return { title: 'Blog' }; }
 }
 
@@ -62,7 +86,9 @@ export default async function BlogPostPage({ params }: Props) {
             <div className="flex items-center justify-center gap-4 text-sm text-white/60 font-mono flex-wrap">
               <span>{post.author}</span>
               {dateStr && <span>{dateStr}</span>}
-              <span className="flex items-center gap-1"><Clock size={12} /> {post.readTime} min read</span>
+              <span className="flex items-center gap-1">
+                <Clock size={12} /> {post.readTime} min read
+              </span>
             </div>
           </div>
         </div>
@@ -78,7 +104,9 @@ export default async function BlogPostPage({ params }: Props) {
             {/* Author card */}
             {post.authorBio && (
               <div className="mt-12 pt-8 border-t border-[#e5e0d8]">
-                <p className="text-xs font-mono uppercase tracking-widest text-[#6b7280] mb-2">About the author</p>
+                <p className="text-xs font-mono uppercase tracking-widest text-[#6b7280] mb-2">
+                  About the author
+                </p>
                 <p className="font-display text-lg font-bold text-[#0f172a] mb-1">{post.author}</p>
                 <p className="text-sm text-[#4b4540] leading-relaxed">{post.authorBio}</p>
               </div>
