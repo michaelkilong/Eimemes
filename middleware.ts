@@ -20,13 +20,11 @@ export function middleware(req: NextRequest) {
   if (!pathname.startsWith(ADMIN_PREFIX)) return NextResponse.next();
   if (PUBLIC_ADMIN.some(p => pathname === p)) return NextResponse.next();
 
-  // Just check cookie exists — API routes handle real verification
   const token = req.cookies.get('admin_token')?.value;
   if (!token) {
     return NextResponse.redirect(new URL(ADMIN_PREFIX, req.url));
   }
 
-  // Decode without verifying (verification happens in API routes)
   try {
     const parts = token.split('.');
     if (parts.length !== 3) throw new Error('Invalid token');
@@ -35,14 +33,12 @@ export function middleware(req: NextRequest) {
       Buffer.from(parts[1], 'base64').toString('utf-8')
     );
 
-    // Check expiry
     if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) {
       const res = NextResponse.redirect(new URL(ADMIN_PREFIX, req.url));
       res.cookies.delete('admin_token');
       return res;
     }
 
-    // Check superadmin routes
     const isSuperAdminRoute = SUPERADMIN_ONLY.some(p => pathname.startsWith(p));
     if (isSuperAdminRoute && payload.role !== 'superadmin') {
       return NextResponse.redirect(
