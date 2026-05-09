@@ -3,11 +3,11 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { formatDistanceToNow } from 'date-fns';
 import { ArrowLeft, Clock, Eye } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { ArticleCard } from '@/components/articles/ArticleCard';
+import CommentSection from '@/components/CommentSection';
 import { connectDB } from '@/lib/mongodb';
 import Article from '@/lib/models/Article';
 
@@ -27,9 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         images: article.coverImage ? [{ url: article.coverImage }] : [],
       },
     };
-  } catch {
-    return { title: 'Article' };
-  }
+  } catch { return { title: 'Article' }; }
 }
 
 export const revalidate = 60;
@@ -43,10 +41,7 @@ async function getArticle(slug: string) {
           status: 'published',
           category: article.category,
           _id: { $ne: article._id },
-        })
-          .limit(3)
-          .select('-content')
-          .lean()
+        }).limit(3).select('-content').lean()
       : [];
     return { article: article ?? null, related };
   } catch {
@@ -60,7 +55,9 @@ export default async function ArticlePage({ params }: Props) {
 
   const imgSrc = article.coverImage || `https://placehold.co/1200x600/0f172a/white?text=Eimemes`;
   const dateStr = article.publishedAt
-    ? new Date(article.publishedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    ? new Date(article.publishedAt).toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      })
     : '';
 
   return (
@@ -69,11 +66,15 @@ export default async function ArticlePage({ params }: Props) {
       <main>
         {/* Hero image */}
         <div className="relative w-full bg-[#0f172a]" style={{ height: '480px' }}>
-          <Image src={imgSrc} alt={article.title} fill className="object-cover opacity-80" priority sizes="100vw" />
+          <Image
+            src={imgSrc} alt={article.title} fill
+            className="object-cover opacity-80" priority sizes="100vw"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
             <div className="max-w-4xl mx-auto">
-              <Link href="/" className="inline-flex items-center gap-1.5 text-white/60 text-xs hover:text-white mb-4 font-mono transition-colors">
+              <Link href="/"
+                className="inline-flex items-center gap-1.5 text-white/60 text-xs hover:text-white mb-4 font-mono transition-colors">
                 <ArrowLeft size={12} /> Home
               </Link>
               <span className="block text-[#d97706] font-mono text-xs uppercase tracking-widest mb-3">
@@ -95,7 +96,9 @@ export default async function ArticlePage({ params }: Props) {
             {article.tags?.length > 0 && (
               <div className="flex gap-2 flex-wrap">
                 {article.tags.map((tag: string) => (
-                  <span key={tag} className="bg-[#f0ece4] text-[#4b4540] px-2 py-0.5 rounded-sm">{tag}</span>
+                  <span key={tag} className="bg-[#f0ece4] text-[#4b4540] px-2 py-0.5 rounded-sm">
+                    {tag}
+                  </span>
                 ))}
               </div>
             )}
@@ -105,15 +108,17 @@ export default async function ArticlePage({ params }: Props) {
         {/* Article body */}
         <div className="container py-12">
           <div className="max-w-3xl mx-auto">
-            {/* Summary lead */}
             <p className="text-xl leading-relaxed text-[#2d2926] font-display italic mb-8 pb-8 border-b border-[#e5e0d8]">
               {article.summary}
             </p>
+            <div className="prose" dangerouslySetInnerHTML={{ __html: article.content }} />
 
-            {/* Rich text content */}
-            <div
-              className="prose"
-              dangerouslySetInnerHTML={{ __html: article.content }}
+            {/* Comments */}
+            <CommentSection
+              postId={article._id.toString()}
+              postType="article"
+              postSlug={article.slug}
+              postTitle={article.title}
             />
           </div>
         </div>
