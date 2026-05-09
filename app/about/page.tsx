@@ -73,10 +73,10 @@ export default function AboutPage() {
             <h2 className="font-display text-2xl font-bold mb-6">Get in touch</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               {[
-                { icon: <Mail size={16} />, label: 'editorial@eimemes.com', href: 'mailto:editorial@eimemes.com' },
+                { icon: <Mail size={16} />, label: 'eimemeschatai@gmail.com', href: 'mailto:eimemeschatai@gmail.com' },
                 { icon: <Twitter size={16} />, label: '@eimemes', href: 'https://twitter.com/eimemes' },
-                { icon: <Phone size={16} />, label: '+91 22 1234 5678', href: 'tel:+912212345678' },
-                { icon: <MapPin size={16} />, label: 'Andheri East, Mumbai, India', href: null },
+                { icon: <Phone size={16} />, label: 'unavailable', href: 'tel:+912212345678' },
+                { icon: <MapPin size={16} />, label: 'London, UK', href: null },
               ].map(({ icon, label, href }) => (
                 <div key={label} className="flex items-center gap-3 text-slate-300">
                   <span className="text-[#d97706]">{icon}</span>
