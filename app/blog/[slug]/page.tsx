@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, Clock } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import CommentSection from '@/components/CommentSection';
 import { connectDB } from '@/lib/mongodb';
 import BlogPost from '@/lib/models/BlogPost';
 
@@ -33,7 +34,9 @@ export default async function BlogPostPage({ params }: Props) {
   if (!post) notFound();
 
   const dateStr = post.publishedAt
-    ? new Date(post.publishedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    ? new Date(post.publishedAt).toLocaleDateString('en-GB', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      })
     : '';
 
   return (
@@ -49,7 +52,8 @@ export default async function BlogPostPage({ params }: Props) {
             </>
           )}
           <div className="container relative z-10 max-w-3xl mx-auto text-center text-white">
-            <Link href="/blogs" className="inline-flex items-center gap-1.5 text-white/50 hover:text-white text-xs font-mono mb-6 transition-colors">
+            <Link href="/blogs"
+              className="inline-flex items-center gap-1.5 text-white/50 hover:text-white text-xs font-mono mb-6 transition-colors">
               <ArrowLeft size={12} /> Opinion & Blogs
             </Link>
             <h1 className="font-display text-3xl md:text-5xl font-bold leading-tight mb-5">
@@ -90,6 +94,14 @@ export default async function BlogPostPage({ params }: Props) {
                 ))}
               </div>
             )}
+
+            {/* Comments */}
+            <CommentSection
+              postId={post._id.toString()}
+              postType="blog"
+              postSlug={post.slug}
+              postTitle={post.title}
+            />
           </div>
         </div>
       </main>
