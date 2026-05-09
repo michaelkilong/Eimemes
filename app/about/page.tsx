@@ -20,7 +20,8 @@ export default function AboutPage() {
             <p className="font-mono text-xs text-[#d97706] uppercase tracking-widest mb-4">Who we are</p>
             <h1 className="font-display text-5xl font-bold text-white mb-5">About Eimemes</h1>
             <p className="text-slate-400 max-w-xl mx-auto leading-relaxed">
-              Independent. Transparent. Community-driven. This is who we are.
+              “EIMEMES - bringing all Eimi Youths closer”
+              Eimi te adim, Eimemes a um e!
             </p>
           </div>
         </div>
