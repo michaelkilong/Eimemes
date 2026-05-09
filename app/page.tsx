@@ -170,7 +170,7 @@ function EmptyHomepage() {
         <div className="container max-w-3xl text-center">
           <p className="font-mono text-xs uppercase tracking-widest text-[#d97706] mb-4">About us</p>
           <h2 className="font-display text-3xl font-bold text-[#0f172a] mb-5">
-            Wholly owned by Eimeme Pvt Ltd
+            Wholly owned by Eimemes Pvt Ltd
           </h2>
           <p className="text-[#4b4540] leading-relaxed mb-8">
             Based in Mumbai, our team of journalists and contributors operate with full editorial independence.
