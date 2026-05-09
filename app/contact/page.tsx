@@ -59,9 +59,9 @@ export default function ContactPage() {
               <h2 className="font-display text-xl font-bold text-[#0f172a] mb-6">Contact info</h2>
               <div className="space-y-5">
                 {[
-                  { icon: <Mail size={18} />, title: 'Email', body: 'editorial@eimemes.com', href: 'mailto:editorial@eimemes.com' },
-                  { icon: <Phone size={18} />, title: 'Phone', body: '+91 22 1234 5678', href: 'tel:+912212345678' },
-                  { icon: <MapPin size={18} />, title: 'Address', body: 'Eimeme Pvt Ltd\nAndheri East, Mumbai 400069', href: null },
+                  { icon: <Mail size={18} />, title: 'Email', body: 'eimemeschatai@gmail.com', href: 'mailto:eimemeschatai@gmail.com' },
+                  { icon: <Phone size={18} />, title: 'Phone', body: 'unavailabe', href: 'tel:+912212345678' },
+                  { icon: <MapPin size={18} />, title: 'Address', body: 'Eimeme Pvt Ltd\nLondon, UK', href: null },
                 ].map(({ icon, title, body, href }) => (
                   <div key={title} className="flex gap-4">
                     <div className="mt-0.5 text-[#d97706] flex-shrink-0">{icon}</div>
@@ -91,11 +91,11 @@ export default function ContactPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                       <label className="block text-xs font-mono uppercase tracking-wider text-[#6b7280] mb-1.5">Full name *</label>
-                      <input className={inputClass} placeholder="Rohan Mehta" required {...field('name')} />
+                      <input className={inputClass} placeholder="Thangboi Kuki" required {...field('name')} />
                     </div>
                     <div>
                       <label className="block text-xs font-mono uppercase tracking-wider text-[#6b7280] mb-1.5">Email address *</label>
-                      <input type="email" className={inputClass} placeholder="rohan@example.com" required {...field('email')} />
+                      <input type="email" className={inputClass} placeholder="thangboi@example.com" required {...field('email')} />
                     </div>
                   </div>
                   <div>
