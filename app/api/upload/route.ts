@@ -9,8 +9,8 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const MAX_SIZE    = 10 * 1024 * 1024; // 10MB
-const ALLOWED     = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const MAX_SIZE = 10 * 1024 * 1024;
+const ALLOWED  = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
 export async function POST(req: NextRequest) {
   const auth = requireAuth(req);
@@ -20,31 +20,20 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
     const file = formData.get('file') as File | null;
 
-    if (!file) {
-      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
-    }
-    if (file.size > MAX_SIZE) {
-      return NextResponse.json({ error: 'File too large (max 10MB)' }, { status: 413 });
-    }
-    if (!ALLOWED.includes(file.type)) {
-      return NextResponse.json({ error: 'Invalid file type' }, { status: 415 });
-    }
+    if (!file) return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+    if (file.size > MAX_SIZE) return NextResponse.json({ error: 'File too large (max 10MB)' }, { status: 413 });
+    if (!ALLOWED.includes(file.type)) return NextResponse.json({ error: 'Invalid file type' }, { status: 415 });
 
-    // Convert file to base64
     const bytes  = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
 
-    // Upload to Cloudinary
     const result = await cloudinary.uploader.upload(base64, {
       folder: 'eimemes',
       resource_type: 'image',
     });
 
-    return NextResponse.json({
-      url:  result.secure_url,
-      name: result.public_id,
-    });
+    return NextResponse.json({ url: result.secure_url, name: result.public_id });
   } catch (err) {
     console.error('[UPLOAD]', err);
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
