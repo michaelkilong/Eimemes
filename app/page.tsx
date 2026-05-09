@@ -9,8 +9,8 @@ import { connectDB } from '@/lib/mongodb';
 import Article from '@/lib/models/Article';
 
 export const metadata: Metadata = {
-  title: 'Eimemes — News, Football, Culture',
-  description: 'Independent digital publication covering grassroots football and cultural narratives.',
+  title: 'Eimemes — Entertainment, Football, Culture',
+  description: '“Eimi te adin, Eimems a um e!”.',
 };
 
 export const revalidate = 60; // ISR: revalidate every 60s
@@ -112,14 +112,14 @@ function EmptyHomepage() {
         />
         <div className="container relative z-10 text-center max-w-4xl mx-auto">
           <p className="text-[#d97706] font-mono text-xs uppercase tracking-widest mb-5">
-            Independent · Mumbai · Est. 2025
-          </p>
+                      </p>
           <h1 className="font-display text-5xl md:text-7xl font-black leading-none mb-6">
             Eimemes
           </h1>
           <p className="text-slate-300 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto mb-10">
-            An independent digital publication covering grassroots football, original reporting,
-            and the cultural stories that mainstream media overlooks.
+            "EIMEMES - bringing Eimi Youth closer"
+            
+            Join us for all the juicy gossip, entertainment, trolls, memes, motivational messages, news (not a news channel though), laughter and much more. Let’s address the elephant in the room as well.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/about" className="btn-primary text-base px-7 py-3">
