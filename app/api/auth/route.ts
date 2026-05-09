@@ -1,3 +1,4 @@
+// app/api/auth/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { connectDB } from '@/lib/mongodb';
@@ -7,36 +8,21 @@ import { signToken, requireAuth } from '@/lib/auth';
 export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json();
-
-    if (!email || !password) {
-      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
-    }
+    if (!email || !password) return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
 
     await connectDB();
-
     const user = await AdminUser.findOne({ email: email.toLowerCase() }).select('+password');
-    if (!user) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
-    }
+    if (!user) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
 
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
-    }
+    if (!isValid) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
 
-    if (user.active === false) {
-      return NextResponse.json({ error: 'Account has been deactivated.' }, { status: 403 });
-    }
+    if (user.active === false) return NextResponse.json({ error: 'Account has been deactivated. Contact your super admin.' }, { status: 403 });
 
     user.lastLogin = new Date();
     await user.save();
 
-    const token = signToken({
-      userId: user._id.toString(),
-      email: user.email,
-      role: user.role,
-      name: user.name,
-    });
+    const token = signToken({ userId: user._id.toString(), email: user.email, role: user.role, name: user.name });
 
     const response = NextResponse.json({
       success: true,
