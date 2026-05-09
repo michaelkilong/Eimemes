@@ -37,12 +37,12 @@ export default function Footer() {
             <h4 className="text-xs uppercase tracking-widest text-slate-500 mb-4 font-mono">Get in touch</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="mailto:editorial@eimemes.com" className="hover:text-[#d97706] transition-colors">
-                  editorial@eimemes.com
+                <a href="mailto:eimemeschatai@gmail.com" className="hover:text-[#d97706] transition-colors">
+                  eimemeschatai@gmail.com
                 </a>
               </li>
-              <li className="text-slate-600">+91 22 1234 5678</li>
-              <li className="text-slate-600">Andheri East, Mumbai</li>
+              <li className="text-slate-600">+unavailable</li>
+              <li className="text-slate-600">Kochi, Kerala</li>
               <li>
                 <a href="https://twitter.com/eimemes" className="hover:text-[#d97706] transition-colors">
                   @eimemes
