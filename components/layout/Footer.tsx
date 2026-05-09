@@ -10,8 +10,10 @@ export default function Footer() {
           <div>
             <h3 className="font-display text-white text-2xl font-bold mb-3">Eimemes</h3>
             <p className="text-sm leading-relaxed text-slate-500">
-              Independent digital publication covering grassroots football,
-              original reporting, and cultural narratives overlooked by mainstream media.
+              “EIMEMES - bring all Eimi Youths closer!”
+              Join the channel for all the juicy gossip, entertainment, trolls,
+              memes, motivational messages, news (not a news channel though),
+              laughter and much more. Let’s address the elephant in the room as well.
             </p>
           </div>
 
