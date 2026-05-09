@@ -8,7 +8,7 @@ import { GalleryItem } from '@/lib/models/index';
 
 export const metadata: Metadata = {
   title: 'Gallery',
-  description: 'Photos and images from Eimemes — grassroots football and community stories.',
+  description: '  ',
 };
 
 export const revalidate = 60;
@@ -38,7 +38,7 @@ export default async function GalleryPage() {
             <p className="font-mono text-xs text-[#d97706] uppercase tracking-widest mb-4">Visual Stories</p>
             <h1 className="font-display text-5xl font-bold text-white mb-4">Gallery</h1>
             <p className="text-slate-400 max-w-md mx-auto text-sm">
-              Moments from the pitch, the terraces, and the community.
+              
             </p>
           </div>
         </div>
