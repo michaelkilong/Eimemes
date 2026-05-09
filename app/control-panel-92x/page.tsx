@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { Eye, EyeOff, Lock } from 'lucide-react';
 
 export default function AdminLoginPage() {
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm]     = useState({ email: '', password: '' });
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -50,39 +50,24 @@ export default function AdminLoginPage() {
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
               <label className="block text-xs font-mono uppercase tracking-wider text-slate-500 mb-2">Email</label>
-              <input
-                type="email" required
-                className={inputClass}
-                placeholder="admin@eimemes.com"
-                value={form.email}
-                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-              />
+              <input type="email" required className={inputClass} placeholder="admin@eimemes.com"
+                value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
             </div>
             <div>
               <label className="block text-xs font-mono uppercase tracking-wider text-slate-500 mb-2">Password</label>
               <div className="relative">
-                <input
-                  type={showPw ? 'text' : 'password'} required
-                  className={`${inputClass} pr-12`}
-                  placeholder="••••••••"
-                  value={form.password}
-                  onChange={e => setForm(f => ({ ...f, password: e.target.value }))}
-                />
-                <button
-                  type="button"
+                <input type={showPw ? 'text' : 'password'} required className={`${inputClass} pr-12`}
+                  placeholder="••••••••" value={form.password}
+                  onChange={e => setForm(f => ({ ...f, password: e.target.value }))} />
+                <button type="button"
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
-                  onClick={() => setShowPw(!showPw)}
-                >
+                  onClick={() => setShowPw(!showPw)}>
                   {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
-            <button
-              type="submit" disabled={loading}
-              className="w-full bg-[#d97706] hover:bg-[#b45309] text-white font-semibold py-3 rounded-sm
-                         font-mono text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed
-                         flex items-center justify-center gap-2"
-            >
+            <button type="submit" disabled={loading}
+              className="w-full bg-[#d97706] hover:bg-[#b45309] text-white font-semibold py-3 rounded-sm font-mono text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
               {loading ? (
                 <><span className="animate-spin h-4 w-4 border-2 border-white/30 border-t-white rounded-full" /> Authenticating...</>
               ) : 'Sign in →'}
