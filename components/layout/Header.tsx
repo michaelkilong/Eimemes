@@ -25,7 +25,7 @@ export default function Header() {
       <div className="border-b border-[#e5e0d8] bg-[#0f172a]">
         <div className="container flex items-center justify-between py-1.5">
           <span className="text-[11px] text-slate-400 font-mono tracking-wide uppercase">
-            Independent · Mumbai · Est. 2025
+          
           </span>
           <span className="text-[11px] text-slate-400 font-mono">{dateStr}</span>
         </div>
@@ -41,7 +41,7 @@ export default function Header() {
             Eimemes
           </h1>
           <p className="text-[11px] text-[#6b7280] font-mono uppercase tracking-widest">
-            News · Football · Culture
+            “Eimete adin Eimemes aum e!”
           </p>
         </Link>
 
@@ -51,7 +51,7 @@ export default function Header() {
             href="mailto:editorial@eimemes.com"
             className="text-xs text-[#6b7280] hover:text-[#d97706] transition-colors font-mono"
           >
-            editorial@eimemes.com
+           eimemes@gmail.com
           </a>
         </div>
       </div>
