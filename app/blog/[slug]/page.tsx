@@ -7,8 +7,10 @@ import { ArrowLeft, Clock } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import CommentSection from '@/components/CommentSection';
+import ShareButtons from '@/components/ShareButtons';
 import { connectDB } from '@/lib/mongodb';
 import BlogPost from '@/lib/models/BlogPost';
+import { getComments } from '@/app/actions/comments';
 
 type Props = { params: { slug: string } };
 
@@ -57,8 +59,11 @@ export default async function BlogPostPage({ params }: Props) {
 
   if (!post) notFound();
 
-  const dateStr = post.publishedAt
-    ? new Date(post.publishedAt).toLocaleDateString('en-GB', {
+  const serialized = JSON.parse(JSON.stringify(post));
+  const comments   = await getComments(serialized._id);
+
+  const dateStr = serialized.publishedAt
+    ? new Date(serialized.publishedAt).toLocaleDateString('en-GB', {
         day: 'numeric', month: 'long', year: 'numeric'
       })
     : '';
@@ -68,10 +73,10 @@ export default async function BlogPostPage({ params }: Props) {
       <Header />
       <main>
         {/* Hero */}
-        <div className={`${post.coverImage ? 'relative' : 'bg-[#0f172a]'} py-20`}>
-          {post.coverImage && (
+        <div className={`${serialized.coverImage ? 'relative' : 'bg-[#0f172a]'} py-20`}>
+          {serialized.coverImage && (
             <>
-              <Image src={post.coverImage} alt={post.title} fill className="object-cover opacity-30" />
+              <Image src={serialized.coverImage} alt={serialized.title} fill className="object-cover opacity-30" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] to-[#0f172a]/60" />
             </>
           )}
@@ -81,13 +86,13 @@ export default async function BlogPostPage({ params }: Props) {
               <ArrowLeft size={12} /> Opinion & Blogs
             </Link>
             <h1 className="font-display text-3xl md:text-5xl font-bold leading-tight mb-5">
-              {post.title}
+              {serialized.title}
             </h1>
             <div className="flex items-center justify-center gap-4 text-sm text-white/60 font-mono flex-wrap">
-              <span>{post.author}</span>
+              <span>{serialized.author}</span>
               {dateStr && <span>{dateStr}</span>}
               <span className="flex items-center gap-1">
-                <Clock size={12} /> {post.readTime} min read
+                <Clock size={12} /> {serialized.readTime} min read
               </span>
             </div>
           </div>
@@ -97,25 +102,25 @@ export default async function BlogPostPage({ params }: Props) {
         <div className="container py-12">
           <div className="max-w-2xl mx-auto">
             <p className="text-xl leading-relaxed font-display italic text-[#2d2926] mb-8 pb-8 border-b border-[#e5e0d8]">
-              {post.excerpt}
+              {serialized.excerpt}
             </p>
-            <div className="prose" dangerouslySetInnerHTML={{ __html: post.content }} />
+            <div className="prose" dangerouslySetInnerHTML={{ __html: serialized.content }} />
 
             {/* Author card */}
-            {post.authorBio && (
+            {serialized.authorBio && (
               <div className="mt-12 pt-8 border-t border-[#e5e0d8]">
                 <p className="text-xs font-mono uppercase tracking-widest text-[#6b7280] mb-2">
                   About the author
                 </p>
-                <p className="font-display text-lg font-bold text-[#0f172a] mb-1">{post.author}</p>
-                <p className="text-sm text-[#4b4540] leading-relaxed">{post.authorBio}</p>
+                <p className="font-display text-lg font-bold text-[#0f172a] mb-1">{serialized.author}</p>
+                <p className="text-sm text-[#4b4540] leading-relaxed">{serialized.authorBio}</p>
               </div>
             )}
 
             {/* Tags */}
-            {post.tags?.length > 0 && (
+            {serialized.tags?.length > 0 && (
               <div className="mt-8 flex flex-wrap gap-2">
-                {post.tags.map((tag: string) => (
+                {serialized.tags.map((tag: string) => (
                   <span key={tag} className="text-xs font-mono bg-[#f0ece4] text-[#4b4540] px-3 py-1 rounded-sm">
                     {tag}
                   </span>
@@ -123,12 +128,20 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
             )}
 
+            {/* Share buttons */}
+            <ShareButtons
+              title={serialized.title}
+              slug={serialized.slug}
+              type="blog"
+            />
+
             {/* Comments */}
             <CommentSection
-              postId={post._id.toString()}
+              postId={serialized._id}
               postType="blog"
-              postSlug={post.slug}
-              postTitle={post.title}
+              postSlug={serialized.slug}
+              postTitle={serialized.title}
+              initialComments={comments}
             />
           </div>
         </div>
@@ -137,3 +150,4 @@ export default async function BlogPostPage({ params }: Props) {
     </>
   );
 }
+          
