@@ -32,14 +32,19 @@ export default function AboutPage() {
           <div className="bg-white border border-[#e5e0d8] rounded-sm p-8 md:p-12 mb-8 animate-fade-up">
             <h2 className="font-display text-3xl font-bold text-[#0f172a] mb-6">Our Mission</h2>
             <p className="text-[#2d2926] leading-relaxed mb-5 text-lg">
-              <strong>Eimemes</strong> is a digital platform built for and by Eimi youths. Founded in 2025 and wholly owned by{' '}
-              <strong>Eimeme Pvt Ltd</strong>, we exist to entertain, uplift, and connect a generation that deserves its own space on the internet.
+              <strong>Eimemes</strong> is an independent digital publication founded in 2025 and wholly owned by{' '}
+              <strong>Eimeme Pvt Ltd</strong>. We cover grassroots football, original reporting,
+              and cultural narratives often overlooked by mainstream media.
             </p>
             <p className="text-[#4b4540] leading-relaxed mb-5">
-              From memes that hit too close to home to content that genuinely guides and inspires, we cover what matters to young Eimi people — with humour, heart, and zero filter.
+              Our team of journalists and contributors are committed to factual storytelling, deep analysis,
+              and elevating community voices — including the rise of Kuki FC. We operate with full editorial
+              independence from our ownership structure.
             </p>
             <p className="text-[#4b4540] leading-relaxed">
-              Every piece of content we put out is guided by one question: does this actually speak to our community? We believe great content doesn't need a big budget — it just needs to be real, relatable, and made with genuine love for the people it serves.
+              Every story we publish is guided by a simple question: does this serve the community? We believe
+              great journalism doesn't require a big budget — it requires honesty, rigor, and genuine care for
+              the people and stories being covered.
             </p>
           </div>
 
@@ -48,10 +53,10 @@ export default function AboutPage() {
             {[
               {
                 title: 'Entertainment',
-                body: 'Memes so good, your screen time report will need therapy. We curate the internet\'s finest nonsense so you don\'t have to. No clickbait, no cringe — just pure, unfiltered content that hits different every single time. Your feed will never be the same again.',
+                body: 'We keep things fun, fresh, and relatable. From the dankest memes to viral trends, we are your go-to source for a good laugh. Life is too short to be serious — scroll, laugh, and share the joy.',
               },
               {
-                title: 'Positivity — Guiding Youths Forward',
+                title: 'Positivity—Guiding Youths Forward',
                 body: 'We are committed to empowering the next generation with content that inspires, motivates, and builds character. From success stories to mental wellness, we champion young voices and help shape a brighter future.',
               },
               {
