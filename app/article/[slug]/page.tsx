@@ -3,13 +3,15 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Clock, Eye } from 'lucide-react';
+import { ArrowLeft, Eye } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { ArticleCard } from '@/components/articles/ArticleCard';
 import CommentSection from '@/components/CommentSection';
+import ShareButtons from '@/components/ShareButtons';
 import { connectDB } from '@/lib/mongodb';
 import Article from '@/lib/models/Article';
+import { getComments } from '@/app/actions/comments';
 
 type Props = { params: { slug: string } };
 
@@ -59,19 +61,23 @@ async function getArticle(slug: string) {
           _id: { $ne: article._id },
         }).limit(3).select('-content').lean()
       : [];
-    return { article: article ?? null, related };
+    const comments = article
+      ? await getComments(article._id.toString())
+      : [];
+    return { article: article ?? null, related, comments };
   } catch {
-    return { article: null, related: [] };
+    return { article: null, related: [], comments: [] };
   }
 }
 
 export default async function ArticlePage({ params }: Props) {
-  const { article, related } = await getArticle(params.slug);
+  const { article, related, comments } = await getArticle(params.slug);
   if (!article) notFound();
 
-  const imgSrc = article.coverImage || `https://placehold.co/1200x600/0f172a/white?text=Eimemes`;
-  const dateStr = article.publishedAt
-    ? new Date(article.publishedAt).toLocaleDateString('en-GB', {
+  const serialized = JSON.parse(JSON.stringify(article));
+  const imgSrc = serialized.coverImage || `https://placehold.co/1200x600/0f172a/white?text=Eimemes`;
+  const dateStr = serialized.publishedAt
+    ? new Date(serialized.publishedAt).toLocaleDateString('en-GB', {
         day: 'numeric', month: 'long', year: 'numeric'
       })
     : '';
@@ -83,7 +89,7 @@ export default async function ArticlePage({ params }: Props) {
         {/* Hero image */}
         <div className="relative w-full bg-[#0f172a]" style={{ height: '480px' }}>
           <Image
-            src={imgSrc} alt={article.title} fill
+            src={imgSrc} alt={serialized.title} fill
             className="object-cover opacity-80" priority sizes="100vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
@@ -94,10 +100,10 @@ export default async function ArticlePage({ params }: Props) {
                 <ArrowLeft size={12} /> Home
               </Link>
               <span className="block text-[#d97706] font-mono text-xs uppercase tracking-widest mb-3">
-                {article.category}
+                {serialized.category}
               </span>
               <h1 className="font-display text-3xl md:text-5xl font-bold text-white leading-tight max-w-3xl">
-                {article.title}
+                {serialized.title}
               </h1>
             </div>
           </div>
@@ -106,12 +112,12 @@ export default async function ArticlePage({ params }: Props) {
         {/* Meta bar */}
         <div className="border-b border-[#e5e0d8] bg-white">
           <div className="max-w-4xl mx-auto px-6 py-4 flex flex-wrap items-center gap-5 text-xs text-[#6b7280] font-mono">
-            <span>By <strong className="text-[#0f172a]">{article.author}</strong></span>
+            <span>By <strong className="text-[#0f172a]">{serialized.author}</strong></span>
             {dateStr && <span>{dateStr}</span>}
-            <span className="flex items-center gap-1"><Eye size={12} /> {article.views || 0} views</span>
-            {article.tags?.length > 0 && (
+            <span className="flex items-center gap-1"><Eye size={12} /> {serialized.views || 0} views</span>
+            {serialized.tags?.length > 0 && (
               <div className="flex gap-2 flex-wrap">
-                {article.tags.map((tag: string) => (
+                {serialized.tags.map((tag: string) => (
                   <span key={tag} className="bg-[#f0ece4] text-[#4b4540] px-2 py-0.5 rounded-sm">
                     {tag}
                   </span>
@@ -125,16 +131,24 @@ export default async function ArticlePage({ params }: Props) {
         <div className="container py-12">
           <div className="max-w-3xl mx-auto">
             <p className="text-xl leading-relaxed text-[#2d2926] font-display italic mb-8 pb-8 border-b border-[#e5e0d8]">
-              {article.summary}
+              {serialized.summary}
             </p>
-            <div className="prose" dangerouslySetInnerHTML={{ __html: article.content }} />
+            <div className="prose" dangerouslySetInnerHTML={{ __html: serialized.content }} />
+
+            {/* Share buttons */}
+            <ShareButtons
+              title={serialized.title}
+              slug={serialized.slug}
+              type="article"
+            />
 
             {/* Comments */}
             <CommentSection
-              postId={article._id.toString()}
+              postId={serialized._id}
               postType="article"
-              postSlug={article.slug}
-              postTitle={article.title}
+              postSlug={serialized.slug}
+              postTitle={serialized.title}
+              initialComments={comments}
             />
           </div>
         </div>
@@ -144,7 +158,7 @@ export default async function ArticlePage({ params }: Props) {
           <div className="bg-[#f8f7f4] border-t border-[#e5e0d8] py-16">
             <div className="container">
               <h2 className="font-display text-2xl font-bold text-[#0f172a] border-l-4 border-[#d97706] pl-4 mb-8">
-                More in {article.category}
+                More in {serialized.category}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {related.map((rel: any) => (
@@ -159,3 +173,4 @@ export default async function ArticlePage({ params }: Props) {
     </>
   );
 }
+      
