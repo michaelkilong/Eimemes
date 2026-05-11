@@ -34,7 +34,7 @@ export default function AboutPage() {
             <h2 className="font-display text-3xl font-bold text-[#0f172a] mb-6">Our Mission</h2>
             <p className="text-[#2d2926] leading-relaxed mb-5 text-lg">
               <strong>Eimemes</strong> is an independent digital publication founded in 2025 and wholly owned by{' '}
-              <strong>Eimeme Pvt Ltd</strong>. Based in Mumbai, we cover grassroots football, original reporting,
+              <strong>Eimeme Pvt Ltd</strong>. We cover grassroots football, original reporting,
               and cultural narratives often overlooked by mainstream media.
             </p>
             <p className="text-[#4b4540] leading-relaxed mb-5">
@@ -52,9 +52,9 @@ export default function AboutPage() {
           {/* Values */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {[
-              { title: 'Editorial Independence', body: 'No advertiser influences our coverage. Our editorial decisions are made purely on journalistic merit.' },
-              { title: 'Radical Transparency', body: 'We publish corrections prominently and acknowledge our mistakes. Trust is earned, not assumed.' },
-              { title: 'Community First', body: 'We exist to serve our community. We amplify voices that deserve to be heard, not just the loudest ones.' },
+              { title: 'Entertainment', body: 'We keep things fun, fresh, and relatable. From the dankest memes to viral trends, we are your go-to source for a good laugh. Life is too short to be serious — scroll, laugh, and share the joy.' },
+              { title: 'Positivity—Guiding Youths Forward', body: 'We are committed to empowering the next generation with content that inspires, motivates, and builds character. From success stories to mental wellness, we champion young voices and help shape a brighter future.' },
+              { title: 'Technology — Stay Ahead of the Curve', body: 'From AI breakthroughs to the latest gadgets, we make trending technology easy to understand. Our mission is to keep you informed, aware, and ready for a world that's changing faster than ever.' },
             ].map(({ title, body }, i) => (
               <div
                 key={title}
