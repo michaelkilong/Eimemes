@@ -22,7 +22,7 @@ const POSITION_ORDER = ['Goalkeeper', 'Defender', 'Midfielder', 'Forward', 'Mana
 async function getData(slug: string) {
   try {
     await connectDB();
-    const branch = await Branch.findOne({ slug, active: true }).lean();
+    const branch = await Branch.findOne({ slug }).lean();
     if (!branch) return null;
     const players = await Player.find({ branch: slug, active: true })
       .sort({ number: 1 })
@@ -96,29 +96,49 @@ export default async function SquadPage({ params }: Props) {
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
                     {posPlayers.map((player: any) => (
                       <div key={player._id}
-                        className="bg-white border border-[#e5e0d8] rounded-sm p-4 text-center card-hover">
-                        <div className="relative w-16 h-16 rounded-full bg-[#0f172a] mx-auto mb-3 overflow-hidden flex items-center justify-center">
+                        className="bg-white border border-[#e5e0d8] rounded-sm overflow-hidden card-hover">
+
+                        {/* Full photo */}
+                        <div className="relative w-full h-52 bg-[#0f172a] overflow-hidden">
                           {player.photo ? (
-                            <Image src={player.photo} alt={player.name} fill className="object-cover" sizes="64px" />
+                            <Image
+                              src={player.photo}
+                              alt={player.name}
+                              fill
+                              className="object-cover object-top"
+                              sizes="200px"
+                            />
                           ) : (
-                            <span className="text-white font-display font-bold text-2xl">
-                              {player.name.charAt(0)}
-                            </span>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <span className="text-white font-display font-bold text-5xl">
+                                {player.name.charAt(0)}
+                              </span>
+                            </div>
+                          )}
+                          {/* Number badge */}
+                          {player.number > 0 && (
+                            <div className="absolute top-2 right-2 bg-[#d97706] text-white font-mono font-bold text-xs w-7 h-7 rounded-full flex items-center justify-center">
+                              {player.number}
+                            </div>
+                          )}
+                          {/* Captain badge */}
+                          {player.isCaptain && (
+                            <div className="absolute top-2 left-2 bg-[#0f172a]/80 text-[#d97706] font-mono text-[9px] uppercase tracking-wide px-2 py-0.5 rounded-sm">
+                              Captain
+                            </div>
                           )}
                         </div>
-                        {player.number > 0 && (
-                          <p className="text-[#d97706] font-mono font-bold text-sm"># {player.number}</p>
-                        )}
-                        <p className="font-semibold text-[#0f172a] text-sm mt-0.5">{player.name}</p>
-                        <p className="text-xs text-[#6b7280] font-mono">{player.nationality}</p>
-                        {player.isCaptain && (
-                          <span className="inline-block mt-1.5 text-[10px] font-mono bg-[#d97706]/15 text-[#d97706] px-2 py-0.5 rounded-sm">
-                            Captain
-                          </span>
-                        )}
-                        {player.bio && (
-                          <p className="text-xs text-[#4b4540] mt-2 leading-relaxed line-clamp-2">{player.bio}</p>
-                        )}
+
+                        {/* Details */}
+                        <div className="p-3 text-center">
+                          <p className="font-semibold text-[#0f172a] text-sm">{player.name}</p>
+                          <p className="text-xs text-[#6b7280] font-mono mt-0.5">{player.nationality}</p>
+                          {player.bio && (
+                            <p className="text-xs text-[#4b4540] mt-2 leading-relaxed line-clamp-2">
+                              {player.bio}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -131,5 +151,4 @@ export default async function SquadPage({ params }: Props) {
       <Footer />
     </>
   );
-  }
-        
+}
