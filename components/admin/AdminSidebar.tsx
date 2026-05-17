@@ -1,4 +1,5 @@
 'use client';
+// components/admin/AdminSidebar.tsx
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
@@ -6,11 +7,12 @@ import toast from 'react-hot-toast';
 import {
   LayoutDashboard, FileText, PenLine, Image as ImgIcon,
   MessageSquare, LogOut, ExternalLink, ChevronLeft, Menu,
-  Users, UserCircle, Shield, MessageCircle,
+  Users, UserCircle, Shield, MessageCircle, ShoppingBag,
+  MapPin, Calendar, ChevronDown, ChevronUp,
 } from 'lucide-react';
 import clsx from 'clsx';
 
-const BASE_NAV = [
+const MAIN_NAV = [
   { href: '/control-panel-92x/dashboard', label: 'Dashboard',  icon: LayoutDashboard, superOnly: false },
   { href: '/control-panel-92x/articles',  label: 'Articles',   icon: FileText,         superOnly: false },
   { href: '/control-panel-92x/blogs',     label: 'Blog Posts', icon: PenLine,          superOnly: false },
@@ -20,14 +22,22 @@ const BASE_NAV = [
   { href: '/control-panel-92x/team',      label: 'Team',       icon: Users,            superOnly: true  },
 ];
 
+const KUKI_NAV = [
+  { href: '/control-panel-92x/kuki-fc/branches', label: 'Branches', icon: MapPin },
+  { href: '/control-panel-92x/kuki-fc/squad',    label: 'Squad',    icon: Users },
+  { href: '/control-panel-92x/kuki-fc/fixtures', label: 'Fixtures', icon: Calendar },
+  { href: '/control-panel-92x/kuki-fc/shop',     label: 'Shop',     icon: ShoppingBag },
+];
+
 export default function AdminSidebar() {
   const pathname    = usePathname();
   const router      = useRouter();
-  const [collapsed, setCollapsed]   = useState(false);
-  const [loggingOut, setLoggingOut] = useState(false);
+  const [collapsed, setCollapsed]     = useState(false);
+  const [loggingOut, setLoggingOut]   = useState(false);
   const [role, setRole]     = useState<'superadmin' | 'writer' | null>(null);
   const [name, setName]     = useState('');
   const [unread, setUnread] = useState(0);
+  const [kukiOpen, setKukiOpen] = useState(pathname.includes('/kuki-fc'));
 
   useEffect(() => {
     fetch('/api/auth', { credentials: 'include' })
@@ -48,7 +58,8 @@ export default function AdminSidebar() {
     router.push('/control-panel-92x');
   };
 
-  const navItems = BASE_NAV.filter(item => !item.superOnly || role === 'superadmin');
+  const navItems = MAIN_NAV.filter(item => !item.superOnly || role === 'superadmin');
+  const isKukiActive = pathname.includes('/kuki-fc');
 
   return (
     <aside className={clsx(
@@ -60,9 +71,7 @@ export default function AdminSidebar() {
         {!collapsed && (
           <div className="flex items-center gap-2 min-w-0">
             <span className="font-display text-white font-bold text-lg truncate">Eimemes</span>
-            {role === 'superadmin' && (
-              <Shield size={13} className="text-[#d97706] flex-shrink-0" />
-            )}
+            {role === 'superadmin' && <Shield size={13} className="text-[#d97706] flex-shrink-0" />}
           </div>
         )}
         <button onClick={() => setCollapsed(!collapsed)}
@@ -78,19 +87,15 @@ export default function AdminSidebar() {
             'border border-[#1e2433] hover:border-[#2a2f3d] flex items-center gap-2.5 transition-all',
             collapsed ? 'mx-2 mt-3 p-2 rounded-sm justify-center' : 'mx-3 mt-3 px-3 py-2.5 rounded-sm'
           )}>
-          <div className={clsx(
-            'w-7 h-7 rounded-sm flex items-center justify-center font-bold text-sm flex-shrink-0',
-            role === 'superadmin' ? 'bg-[#d97706]/20 text-[#d97706]' : 'bg-blue-500/15 text-blue-400'
-          )}>
+          <div className={clsx('w-7 h-7 rounded-sm flex items-center justify-center font-bold text-sm flex-shrink-0',
+            role === 'superadmin' ? 'bg-[#d97706]/20 text-[#d97706]' : 'bg-blue-500/15 text-blue-400')}>
             {name.charAt(0).toUpperCase()}
           </div>
           {!collapsed && (
             <div className="min-w-0 flex-1">
               <p className="text-xs text-white font-medium truncate">{name}</p>
-              <p className={clsx(
-                'text-[10px] font-mono uppercase tracking-wide',
-                role === 'superadmin' ? 'text-[#d97706]' : 'text-blue-400'
-              )}>
+              <p className={clsx('text-[10px] font-mono uppercase tracking-wide',
+                role === 'superadmin' ? 'text-[#d97706]' : 'text-blue-400')}>
                 {role === 'superadmin' ? 'Super Admin' : 'Writer'}
               </p>
             </div>
@@ -99,42 +104,75 @@ export default function AdminSidebar() {
       )}
 
       {/* Nav */}
-      <nav className="flex-1 py-4 space-y-0.5 px-2 mt-2">
+      <nav className="flex-1 py-4 px-2 mt-2 overflow-y-auto space-y-0.5">
+        {/* Main nav */}
         {navItems.map(({ href, label, icon: Icon }) => {
           const active     = pathname.startsWith(href);
           const isMessages = href.includes('messages');
           return (
             <Link key={href} href={href}
-              className={clsx(
-                'flex items-center gap-3 px-3 py-2.5 rounded-sm transition-all relative border',
-                active
-                  ? 'bg-[#d97706]/15 text-[#d97706] border-[#d97706]/20'
-                  : 'text-slate-400 hover:text-white hover:bg-[#1e2433] border-transparent'
-              )}>
+              className={clsx('flex items-center gap-3 px-3 py-2.5 rounded-sm transition-all relative border',
+                active ? 'bg-[#d97706]/15 text-[#d97706] border-[#d97706]/20' : 'text-slate-400 hover:text-white hover:bg-[#1e2433] border-transparent')}>
               <Icon size={17} className="flex-shrink-0" />
               {!collapsed && <span className="font-mono text-xs flex-1">{label}</span>}
               {isMessages && unread > 0 && (
-                <span className={clsx(
-                  'bg-[#d97706] text-white text-[10px] font-mono font-bold rounded-full flex items-center justify-center flex-shrink-0',
-                  collapsed ? 'absolute -top-1 -right-1 w-4 h-4' : 'w-5 h-5'
-                )}>
+                <span className={clsx('bg-[#d97706] text-white text-[10px] font-mono font-bold rounded-full flex items-center justify-center flex-shrink-0',
+                  collapsed ? 'absolute -top-1 -right-1 w-4 h-4' : 'w-5 h-5')}>
                   {unread > 9 ? '9+' : unread}
                 </span>
               )}
             </Link>
           );
         })}
+
+        {/* Kuki FC section */}
+        <div className="pt-2">
+          {/* Kuki FC header button */}
+          <button
+            onClick={() => !collapsed && setKukiOpen(!kukiOpen)}
+            className={clsx(
+              'w-full flex items-center gap-3 px-3 py-2.5 rounded-sm transition-all border',
+              isKukiActive ? 'text-[#d97706] border-[#d97706]/20 bg-[#d97706]/10' : 'text-slate-400 hover:text-white hover:bg-[#1e2433] border-transparent'
+            )}>
+            {/* Kuki FC badge */}
+            <div className="w-[17px] h-[17px] bg-[#d97706] rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-white font-black text-[8px]">K</span>
+            </div>
+            {!collapsed && (
+              <>
+                <span className="font-mono text-xs flex-1 text-left">Kuki FC</span>
+                {kukiOpen ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+              </>
+            )}
+          </button>
+
+          {/* Kuki FC sub-items */}
+          {(kukiOpen || isKukiActive) && !collapsed && (
+            <div className="ml-4 mt-0.5 space-y-0.5 border-l border-[#1e2433] pl-3">
+              {/* Overview */}
+              <Link href="/control-panel-92x/kuki-fc"
+                className={clsx('flex items-center gap-2 px-2 py-2 rounded-sm text-xs font-mono transition-all',
+                  pathname === '/control-panel-92x/kuki-fc' ? 'text-[#d97706]' : 'text-slate-500 hover:text-white')}>
+                Overview
+              </Link>
+              {KUKI_NAV.map(({ href, label, icon: Icon }) => (
+                <Link key={href} href={href}
+                  className={clsx('flex items-center gap-2 px-2 py-2 rounded-sm text-xs font-mono transition-all',
+                    pathname.startsWith(href) ? 'text-[#d97706]' : 'text-slate-500 hover:text-white')}>
+                  <Icon size={13} className="flex-shrink-0" />
+                  {label}
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
       </nav>
 
       {/* Footer */}
       <div className="border-t border-[#1e2433] p-2 space-y-0.5">
         <Link href="/control-panel-92x/account"
-          className={clsx(
-            'flex items-center gap-3 px-3 py-2.5 rounded-sm transition-all border',
-            pathname.startsWith('/control-panel-92x/account')
-              ? 'bg-[#d97706]/15 text-[#d97706] border-[#d97706]/20'
-              : 'text-slate-500 hover:text-slate-300 hover:bg-[#1e2433] border-transparent'
-          )}>
+          className={clsx('flex items-center gap-3 px-3 py-2.5 rounded-sm transition-all border',
+            pathname.startsWith('/control-panel-92x/account') ? 'bg-[#d97706]/15 text-[#d97706] border-[#d97706]/20' : 'text-slate-500 hover:text-slate-300 hover:bg-[#1e2433] border-transparent')}>
           <UserCircle size={17} className="flex-shrink-0" />
           {!collapsed && <span className="font-mono text-xs">My Account</span>}
         </Link>
@@ -152,3 +190,4 @@ export default function AdminSidebar() {
     </aside>
   );
 }
+                        
