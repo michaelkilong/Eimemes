@@ -1,15 +1,17 @@
 'use client';
+// components/layout/Header.tsx
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
 const navLinks = [
-  { href: '/',        label: 'Home' },
-  { href: '/blogs',   label: 'Opinion' },
-  { href: '/gallery', label: 'Gallery' },
-  { href: '/about',   label: 'About' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/',         label: 'Home' },
+  { href: '/blogs',    label: 'Opinion' },
+  { href: '/gallery',  label: 'Gallery' },
+  { href: '/kuki-fc',  label: 'Kuki FC' },
+  { href: '/about',    label: 'About' },
+  { href: '/contact',  label: 'Contact' },
 ];
 
 export default function Header() {
@@ -18,7 +20,7 @@ export default function Header() {
 
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-GB', {
-    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
   });
 
   return (
@@ -27,7 +29,7 @@ export default function Header() {
       <div className="border-b border-[#e5e0d8] bg-[#0f172a]">
         <div className="container flex items-center justify-between py-1.5">
           <span className="text-[11px] text-slate-400 font-mono tracking-wide uppercase">
-            
+            Independent · Mumbai · Est. 2025
           </span>
           <span className="text-[11px] text-slate-400 font-mono">{dateStr}</span>
         </div>
@@ -40,13 +42,13 @@ export default function Header() {
             Eimemes
           </h1>
           <p className="text-[11px] text-[#6b7280] font-mono uppercase tracking-widest">
-            “Eime te adin, Eimemes a um e!”
+            News · Football · Culture
           </p>
         </Link>
         <div className="hidden md:flex items-center gap-3">
-          <a href="mailto:eimemeschatai@gmail.com"
+          <a href="mailto:editorial@eimemes.com"
             className="text-xs text-[#6b7280] hover:text-[#d97706] transition-colors font-mono">
-            eimemesschatai@gmail.com
+            editorial@eimemes.com
           </a>
         </div>
       </div>
@@ -57,7 +59,9 @@ export default function Header() {
           {/* Desktop nav */}
           <ul className="hidden md:flex">
             {navLinks.map(({ href, label }) => {
-              const active = pathname === href;
+              const active = href === '/'
+                ? pathname === '/'
+                : pathname.startsWith(href);
               return (
                 <li key={href}>
                   <Link href={href}
@@ -92,7 +96,7 @@ export default function Header() {
               <Link key={href} href={href}
                 onClick={() => setMobileOpen(false)}
                 className={`block px-6 py-3 text-sm font-medium border-b border-[#f0ece4] ${
-                  pathname === href ? 'text-[#d97706] bg-[#fef9e6]' : 'text-[#1e293b]'
+                  pathname.startsWith(href) ? 'text-[#d97706] bg-[#fef9e6]' : 'text-[#1e293b]'
                 }`}>
                 {label}
               </Link>
