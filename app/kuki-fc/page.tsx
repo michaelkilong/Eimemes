@@ -39,8 +39,8 @@ export default async function KukiFCPage() {
             }}
           />
           <div className="container relative z-10">
-            <div className="w-20 h-20 bg-[#d97706] rounded-full flex items-center justify-center mx-auto mb-6">
-              <span className="text-white font-display font-black text-2xl">KFC</span>
+            <div className="w-24 h-24 mx-auto mb-6">
+             <img src="https://ibb.co/LX8zZmLz" alt="Kuki FC Logo" className="w-full h-full object-contain rounded-full"/>
             </div>
             <h1 className="font-display text-5xl md:text-7xl font-black text-white mb-4">
               Kuki FC
