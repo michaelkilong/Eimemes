@@ -77,7 +77,7 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               {[
                 { icon: <Mail size={16} />, label: 'eimemeschatai@gmail.com', href: 'mailto:eimemeschatai@gmail.com' },
-                { icon: <Twitter size={16} />, label: '@eimemes', href: 'https://twitter.com/eimemes' },
+                { icon: <Instagram size={16} />, label: '@eimemes', href: 'https://www.instagram.com/eimemes____?igsh=MXduZm5oc2p5ZWVhNA==' },
                 { icon: <Phone size={16} />, label: 'unavailable', href: 'tel:+912212345678' },
                 { icon: <MapPin size={16} />, label: 'London, UK', href: null },
               ].map(({ icon, label, href }) => (
