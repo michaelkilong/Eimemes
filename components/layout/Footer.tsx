@@ -10,8 +10,9 @@ export default function Footer() {
           <div>
             <h3 className="font-display text-white text-2xl font-bold mb-3">Eimemes</h3>
             <p className="text-sm leading-relaxed text-slate-500">
-              Independent digital publication covering grassroots football,
-              original reporting, and cultural narratives overlooked by mainstream media.
+              Join the channel for all the juicy gossip, entertainment, 
+              trolls, memes, motivational messages, news (not a news channel though), 
+              laughter and much more. Let’s address the elephant in the room as well. 
             </p>
           </div>
 
@@ -42,8 +43,8 @@ export default function Footer() {
             <h4 className="text-xs uppercase tracking-widest text-slate-500 mb-4 font-mono">Get in touch</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <a href="mailto:editorial@eimemes.com" className="hover:text-[#d97706] transition-colors">
-                  editorial@eimemes.com
+                <a href="mailto:eimemeschatai@gmai.com" className="hover:text-[#d97706] transition-colors">
+                  eimemeschatai@gmail.com
                 </a>
               </li>
               <li className="text-slate-600">unavailable</li>
