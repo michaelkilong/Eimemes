@@ -70,7 +70,7 @@ export default async function KukiFCPage() {
               {[
                 { label: 'Branches', value: branches.length || '3+' },
                 { label: 'Cities', value: branches.length || '3+' },
-                { label: 'Est.', value: '2020' },
+                { label: 'Est.', value: '2025' },
               ].map(({ label, value }) => (
                 <div key={label}>
                   <p className="text-white font-display font-bold text-2xl">{value}</p>
