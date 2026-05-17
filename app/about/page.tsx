@@ -1,6 +1,6 @@
 // app/about/page.tsx
 import { Metadata } from 'next';
-import { Mail, Twitter, MapPin, Phone } from 'lucide-react';
+import { Mail, Instagram, MapPin, Phone } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
