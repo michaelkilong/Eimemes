@@ -50,7 +50,7 @@ export default function Footer() {
               <li className="text-slate-600">unavailable</li>
               <li className="text-slate-600">London, UK</li>
               <li>
-                <a href="https://twitter.com/eimemes" className="hover:text-[#d97706] transition-colors">
+                <a href="https://www.instagram.com/eimemes____?igsh=MXduZm5oc2p5ZWVhNA==" className="hover:text-[#d97706] transition-colors">
                   @eimemes
                 </a>
               </li>
