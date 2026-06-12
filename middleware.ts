@@ -14,11 +14,17 @@ const PUBLIC_ADMIN = [
   '/control-panel-92x/',
 ];
 
-export function middleware(req: NextRequest) {
+// CORS allowed origins
+const ALLOWED_ORIGINS = [
+  'https://eimemes.vercel.app',
+  'http://localhost:3000',
+];
+
+function handleAdminAuth(req: NextRequest): NextResponse | null {
   const { pathname } = req.nextUrl;
 
-  if (!pathname.startsWith(ADMIN_PREFIX)) return NextResponse.next();
-  if (PUBLIC_ADMIN.some(p => pathname === p)) return NextResponse.next();
+  if (!pathname.startsWith(ADMIN_PREFIX)) return null;
+  if (PUBLIC_ADMIN.some(p => pathname === p)) return null;
 
   const token = req.cookies.get('admin_token')?.value;
   if (!token) {
@@ -46,7 +52,7 @@ export function middleware(req: NextRequest) {
       );
     }
 
-    return NextResponse.next();
+    return null;
   } catch {
     const res = NextResponse.redirect(new URL(ADMIN_PREFIX, req.url));
     res.cookies.delete('admin_token');
@@ -54,6 +60,49 @@ export function middleware(req: NextRequest) {
   }
 }
 
+function handleCORS(req: NextRequest): NextResponse | null {
+  // Only apply to API routes
+  if (!req.nextUrl.pathname.startsWith('/api/')) return null;
+
+  const origin = req.headers.get('origin') || '';
+  const response = NextResponse.next();
+
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    response.headers.set('Access-Control-Allow-Origin', origin);
+    response.headers.set('Access-Control-Allow-Credentials', 'true');
+  } else if (origin) {
+    // Block unauthorized origins
+    return new NextResponse(
+      JSON.stringify({ error: 'CORS policy violation' }),
+      { status: 403, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
+  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return new NextResponse(null, { status: 204, headers: response.headers });
+  }
+
+  return response;
+}
+
+export function middleware(req: NextRequest) {
+  // Check CORS first for API routes
+  const corsResponse = handleCORS(req);
+  if (corsResponse) return corsResponse;
+
+  // Then check admin auth
+  const adminResponse = handleAdminAuth(req);
+  if (adminResponse) return adminResponse;
+
+  return NextResponse.next();
+}
+
 export const config = {
-  matcher: ['/control-panel-92x/:path*'],
+  matcher: [
+    '/control-panel-92x/:path*',
+    '/api/:path*',
+  ],
 };
