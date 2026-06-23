@@ -32,7 +32,7 @@ export default async function KukiFCPage() {
     <>
       <Header />
       <main>
-        {/* Hero — with football background & fading black */}
+        {/* Hero — football background + fading black */}
         <div className="relative py-24 text-center overflow-hidden">
           {/* Background image */}
           <div
@@ -48,7 +48,7 @@ export default async function KukiFCPage() {
           <div className="absolute inset-0 bg-black/20" />
 
           <div className="container relative z-10">
-            {/* Logo — now using your correct direct URL */}
+            {/* Logo */}
             <div className="w-24 h-24 mx-auto mb-6">
               <img
                 src="https://i.ibb.co/hx2zzpkK/469-B42-C4-3-CF4-467-E-88-BE-F24840-CC9-D52.jpg"
@@ -71,9 +71,10 @@ export default async function KukiFCPage() {
               <Link href="/kuki-fc/shop" className="btn-primary px-6 py-3">
                 <ShoppingBag size={16} /> Shop
               </Link>
+              {/* ✅ Updated “Our Branches” button for visibility */}
               <Link
                 href="#branches"
-                className="btn-ghost border-slate-600 text-slate-300 hover:bg-slate-800 px-6 py-3"
+                className="inline-flex items-center gap-2 px-6 py-3 border-2 border-white text-white font-medium text-sm uppercase tracking-wider hover:bg-white hover:text-[#0f172a] transition-colors rounded-sm"
               >
                 <MapPin size={16} /> Our Branches
               </Link>
