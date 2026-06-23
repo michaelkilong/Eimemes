@@ -43,16 +43,12 @@ export default async function HomePage() {
         {hasContent ? (
           /* ─── POPULATED STATE ──────────────────────────────────────── */
           <div className="container py-10">
-            {/* Featured article */}
             {featured && (
               <FeaturedArticle article={JSON.parse(JSON.stringify(featured))} />
             )}
 
-            {/* Section header */}
             <div className="flex items-center justify-between mb-6">
-              <h2
-                className="text-xl font-display font-bold text-[#0f172a] pl-4 border-l-4 border-[#d97706]"
-              >
+              <h2 className="text-xl font-display font-bold text-[#0f172a] pl-4 border-l-4 border-[#d97706]">
                 Latest from the Newsroom
               </h2>
               <Link href="/blogs" className="text-xs text-[#d97706] font-semibold flex items-center gap-1 hover:gap-2 transition-all font-mono">
@@ -60,7 +56,6 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            {/* Articles grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
               {latest.slice(0, 6).map((article, i) => (
                 <div
@@ -73,7 +68,6 @@ export default async function HomePage() {
               ))}
             </div>
 
-            {/* Second row */}
             {latest.length > 6 && (
               <>
                 <h2 className="text-xl font-display font-bold text-[#0f172a] pl-4 border-l-4 border-[#d97706] mb-6">
@@ -88,7 +82,6 @@ export default async function HomePage() {
             )}
           </div>
         ) : (
-          /* ─── EMPTY / BRAND STATE ──────────────────────────────────── */
           <EmptyHomepage />
         )}
       </main>
@@ -99,7 +92,7 @@ export default async function HomePage() {
 
 function EmptyHomepage() {
   return (
-    <section className="relative text-white py-24 md:py-40 min-h-[90vh] flex items-center overflow-hidden">
+    <section className="relative bg-[#0f172a] text-white min-h-[90vh] flex items-center overflow-hidden">
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -114,7 +107,7 @@ function EmptyHomepage() {
       <div className="absolute inset-0 bg-black/20" />
 
       {/* Content */}
-      <div className="container relative z-10 text-center max-w-3xl mx-auto">
+      <div className="container relative z-10 text-center max-w-3xl mx-auto py-16">
         <p className="text-[#d97706] font-mono text-xs uppercase tracking-widest mb-5">
           Welcome to
         </p>
@@ -134,7 +127,7 @@ function EmptyHomepage() {
           </Link>
           <Link
             href="/contact"
-            className="btn-ghost text-base px-7 py-3 border-slate-600 text-slate-300 hover:bg-slate-800 hover:border-slate-500"
+            className="bg-white text-[#0f172a] font-semibold px-7 py-3 rounded-sm hover:bg-slate-200 transition-colors inline-block"
           >
             Get in touch
           </Link>
