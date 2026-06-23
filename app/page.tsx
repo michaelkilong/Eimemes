@@ -41,6 +41,7 @@ export default async function HomePage() {
       <Header />
       <main className="min-h-screen">
         {hasContent ? (
+          /* ─── POPULATED STATE ──────────────────────────────────────── */
           <div className="container py-10">
             {featured && (
               <FeaturedArticle article={JSON.parse(JSON.stringify(featured))} />
@@ -81,6 +82,7 @@ export default async function HomePage() {
             )}
           </div>
         ) : (
+          /* ─── EMPTY / BRAND STATE ──────────────────────────────────── */
           <EmptyHomepage />
         )}
       </main>
@@ -91,7 +93,7 @@ export default async function HomePage() {
 
 function EmptyHomepage() {
   return (
-    <section className="relative bg-[#0f172a] text-white min-h-[90vh] flex items-center overflow-hidden">
+    <section className="relative bg-[#0f172a] text-white py-24 md:py-36 overflow-hidden">
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -106,22 +108,20 @@ function EmptyHomepage() {
       <div className="absolute inset-0 bg-black/20" />
 
       {/* Content */}
-      <div className="container relative z-10 text-center max-w-3xl mx-auto py-16">
+      <div className="container relative z-10 text-center max-w-4xl mx-auto">
         <p className="text-[#d97706] font-mono text-xs uppercase tracking-widest mb-5">
           Welcome to
         </p>
         <h1 className="font-display text-5xl md:text-7xl font-black leading-none mb-6">
           Eimemes
         </h1>
-        <p className="text-slate-300 text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-10">
+        <p className="text-slate-300 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto mb-10">
           A digital platform built for and by Eimi youths. Founded in 2025 and wholly owned
           by <strong>Eimeme Pvt Ltd</strong>, we exist to entertain, uplift, and connect a
           generation that deserves its own space on the internet. From memes that hit too
           close to home to content that genuinely guides and inspires — we cover what matters
           to young Eimi people with humour, heart, and zero filter.
         </p>
-
-        {/* Buttons – identical size and alignment */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link
             href="/about"
