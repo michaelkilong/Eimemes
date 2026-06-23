@@ -136,7 +136,7 @@ export default function PrivacyPage() {
                 regarding your personal information should be sent to:
               </p>
               <p className="text-[#4b4540] leading-relaxed mt-2 font-mono text-sm">
-                <strong>Name:</strong> [Grievance Officer Name]<br />
+                <strong>Name:</strong> Admin<br />
                 <strong>Email:</strong>{' '}
                 <a
                   href="mailto:eimemeschatai@gmail.com"
@@ -145,7 +145,7 @@ export default function PrivacyPage() {
                   eimemeschatai@gmail.com
                 </a>
                 <br />
-                <strong>Address:</strong> [Insert your office address]
+                <strong>Address:</strong> Kochi, Kerala 
               </p>
             </section>
 
