@@ -9,6 +9,8 @@ export interface IGalleryItem extends Document {
   category: string;
   status: 'draft' | 'published';
   order: number;
+  branch?: string;                     // NEW
+  fixture?: mongoose.Types.ObjectId;   // NEW
   createdAt: Date;
   updatedAt: Date;
 }
@@ -21,6 +23,8 @@ const GalleryItemSchema = new Schema<IGalleryItem>(
     category: { type: String, default: 'General' },
     status:   { type: String, enum: ['draft', 'published'], default: 'published' },
     order:    { type: Number, default: 0 },
+    branch:   { type: String, default: '' },                                     // NEW
+    fixture:  { type: Schema.Types.ObjectId, ref: 'Fixture', default: null },    // NEW
   },
   { timestamps: true }
 );
