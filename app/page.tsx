@@ -120,14 +120,18 @@ function EmptyHomepage() {
           close to home to content that genuinely guides and inspires — we cover what matters
           to young Eimi people with humour, heart, and zero filter.
         </p>
-        {/* Buttons – aligned center, consistent styling */}
+
+        {/* Buttons – identical size and alignment */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Link href="/about" className="btn-primary text-base px-7 py-3">
+          <Link
+            href="/about"
+            className="inline-flex items-center justify-center text-base font-semibold px-7 py-3 rounded-sm transition-colors bg-[#d97706] text-white hover:bg-[#b45309]"
+          >
             Our Story
           </Link>
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center bg-white text-[#0f172a] font-semibold px-7 py-3 rounded-sm hover:bg-slate-200 transition-colors"
+            className="inline-flex items-center justify-center text-base font-semibold px-7 py-3 rounded-sm transition-colors bg-white text-[#0f172a] hover:bg-slate-200"
           >
             Get in touch
           </Link>
