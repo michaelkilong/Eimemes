@@ -1,4 +1,3 @@
-// app/about/page.tsx
 import { Metadata } from 'next';
 import { Mail, Instagram, MapPin, Phone } from 'lucide-react';
 import Header from '@/components/layout/Header';
@@ -43,7 +42,7 @@ export default function AboutPage() {
             </p>
           </div>
 
-          {/* Values */}
+          {/* Values — orange vertical line removed */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             {[
               {
@@ -61,10 +60,9 @@ export default function AboutPage() {
             ].map(({ title, body }, i) => (
               <div
                 key={title}
-                className="bg-[#fef9e6] border border-[#e5e0d8] rounded-sm p-6 animate-fade-up"
+                className="bg-white border border-[#e5e0d8] rounded-sm p-6 animate-fade-up"
                 style={{ animationDelay: `${i * 100}ms` }}
               >
-                <div className="w-1 h-8 bg-[#d97706] mb-4 rounded-full" />
                 <h3 className="font-display text-lg font-bold text-[#0f172a] mb-2">{title}</h3>
                 <p className="text-sm text-[#4b4540] leading-relaxed">{body}</p>
               </div>
@@ -78,7 +76,7 @@ export default function AboutPage() {
               {[
                 { icon: <Mail size={16} />, label: 'eimemeschatai@gmail.com', href: 'mailto:eimemeschatai@gmail.com' },
                 { icon: <Instagram size={16} />, label: '@eimemes', href: 'https://www.instagram.com/eimemes____?igsh=MXduZm5oc2p5ZWVhNA==' },
-                { icon: <Phone size={16} />, label: 'unavailable', href: 'tel:+912212345678' },
+                { icon: <Phone size={16} />, label: 'unavailable', href: null },
                 { icon: <MapPin size={16} />, label: 'London, UK', href: null },
               ].map(({ icon, label, href }) => (
                 <div key={label} className="flex items-center gap-3 text-slate-300">
