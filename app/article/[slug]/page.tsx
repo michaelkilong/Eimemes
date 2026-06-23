@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, Eye } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react'; // Eye removed
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { ArticleCard } from '@/components/articles/ArticleCard';
@@ -86,13 +86,14 @@ export default async function ArticlePage({ params }: Props) {
     <>
       <Header />
       <main>
-        {/* Hero image */}
+        {/* Hero image — increased gradient overlay for readability */}
         <div className="relative w-full bg-[#0f172a]" style={{ height: '480px' }}>
           <Image
             src={imgSrc} alt={serialized.title} fill
             className="object-cover opacity-80" priority sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          {/* Stronger gradient: more black at bottom, darker middle */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
             <div className="max-w-4xl mx-auto">
               <Link href="/"
@@ -109,12 +110,12 @@ export default async function ArticlePage({ params }: Props) {
           </div>
         </div>
 
-        {/* Meta bar */}
+        {/* Meta bar — view counter removed */}
         <div className="border-b border-[#e5e0d8] bg-white">
           <div className="max-w-4xl mx-auto px-6 py-4 flex flex-wrap items-center gap-5 text-xs text-[#6b7280] font-mono">
             <span>By <strong className="text-[#0f172a]">{serialized.author}</strong></span>
             {dateStr && <span>{dateStr}</span>}
-            <span className="flex items-center gap-1"><Eye size={12} /> {serialized.views || 0} views</span>
+            {/* Removed the views span */}
             {serialized.tags?.length > 0 && (
               <div className="flex gap-2 flex-wrap">
                 {serialized.tags.map((tag: string) => (
@@ -153,9 +154,9 @@ export default async function ArticlePage({ params }: Props) {
           </div>
         </div>
 
-        {/* Related articles */}
+        {/* Related articles — background changed to white */}
         {related.length > 0 && (
-          <div className="bg-[#f8f7f4] border-t border-[#e5e0d8] py-16">
+          <div className="bg-white border-t border-[#e5e0d8] py-16">
             <div className="container">
               <h2 className="font-display text-2xl font-bold text-[#0f172a] border-l-4 border-[#d97706] pl-4 mb-8">
                 More in {serialized.category}
@@ -173,4 +174,3 @@ export default async function ArticlePage({ params }: Props) {
     </>
   );
 }
-      
