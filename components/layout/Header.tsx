@@ -1,3 +1,4 @@
+
 'use client';
 // components/layout/Header.tsx
 import Link from 'next/link';
@@ -46,7 +47,6 @@ export default function Header() {
           </p>
         </Link>
 
-        {/* Right side: desktop email / hamburger */}
         <div className="flex items-center gap-3">
           <a
             href="mailto:editorial@eimemes.com"
@@ -54,8 +54,7 @@ export default function Header() {
           >
             editorial@eimemes.com
           </a>
-
-          {/* Hamburger – always visible on mobile, placed here */}
+          {/* Hamburger – placed here, same row as logo, top right on mobile */}
           <button
             className="md:hidden p-2 rounded text-[#1e293b] hover:bg-[#f0ece4] transition-colors"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -66,14 +65,12 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Desktop nav – glassmorphism effect */}
-      <nav className="hidden md:block sticky top-0 z-50 backdrop-blur-lg bg-white/80 border-t border-b border-[#e5e0d8] shadow-sm">
+      {/* Desktop navigation – glassmorphism effect */}
+      <nav className="hidden md:block sticky top-0 z-50 backdrop-blur-md bg-white/70 border-t border-b border-white/20 shadow-sm">
         <div className="container flex items-center">
           <ul className="flex">
             {navLinks.map(({ href, label }) => {
-              const active = href === '/'
-                ? pathname === '/'
-                : pathname.startsWith(href);
+              const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
               return (
                 <li key={href}>
                   <Link
@@ -93,18 +90,16 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* Mobile menu – slides down from logo row, also glass */}
+      {/* Mobile menu – glassmorphism dropdown */}
       {mobileOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 z-40 backdrop-blur-lg bg-white/90 border-b border-[#e5e0d8] shadow-lg">
+        <div className="md:hidden absolute top-full left-0 right-0 z-40 backdrop-blur-md bg-white/90 border-b border-white/20 shadow-lg">
           {navLinks.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
               onClick={() => setMobileOpen(false)}
               className={`block px-6 py-3 text-sm font-medium border-b border-[#f0ece4] ${
-                pathname.startsWith(href)
-                  ? 'text-[#d97706] bg-[#fef9e6]'
-                  : 'text-[#1e293b]'
+                pathname.startsWith(href) ? 'text-[#d97706] bg-[#fef9e6]' : 'text-[#1e293b]'
               }`}
             >
               {label}
