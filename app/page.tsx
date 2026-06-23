@@ -1,7 +1,7 @@
 // app/page.tsx
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Newspaper, PenLine, Users } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { FeaturedArticle, ArticleCard } from '@/components/articles/ArticleCard';
@@ -88,7 +88,7 @@ export default async function HomePage() {
             )}
           </div>
         ) : (
-          /* ─── EMPTY / ABOUT STATE ──────────────────────────────────── */
+          /* ─── EMPTY / BRAND STATE ──────────────────────────────────── */
           <EmptyHomepage />
         )}
       </main>
@@ -99,89 +99,47 @@ export default async function HomePage() {
 
 function EmptyHomepage() {
   return (
-    <>
-      {/* Hero */}
-      <section className="bg-[#0f172a] text-white py-24 md:py-36 relative overflow-hidden">
-        {/* Decorative grid */}
-        <div
-          className="absolute inset-0 opacity-5"
-          style={{
-            backgroundImage: 'repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 0,transparent 50%), repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 0,transparent 50%)',
-            backgroundSize: '60px 60px',
-          }}
-        />
-        <div className="container relative z-10 text-center max-w-4xl mx-auto">
-          <p className="text-[#d97706] font-mono text-xs uppercase tracking-widest mb-5">
-                      </p>
-          <h1 className="font-display text-5xl md:text-7xl font-black leading-none mb-6">
-            Eimemes
-          </h1>
-          <p className="text-slate-300 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto mb-10">
-            "EIMEMES - bringing Eimi Youth closer"
-            
-            Join us for all the juicy gossip, entertainment, trolls, memes, motivational messages, news (not a news channel though), laughter and much more. Let’s address the elephant in the room as well.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/about" className="btn-primary text-base px-7 py-3">
-              Our Story
-            </Link>
-            <Link href="/contact" className="btn-ghost text-base px-7 py-3 border-slate-600 text-slate-300 hover:bg-slate-800 hover:border-slate-500">
-              Get in touch
-            </Link>
-          </div>
-        </div>
-      </section>
+    <section className="relative text-white py-24 md:py-40 min-h-[90vh] flex items-center overflow-hidden">
+      {/* Background image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage:
+            "url('https://i.ibb.co/TqdxHX30/19-E99952-7134-413-C-A16-A-B9828878-C15-C.webp')",
+        }}
+      />
 
-      {/* Features */}
-      <section className="container py-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {[
-            {
-              icon: <Newspaper size={28} className="text-[#d97706]" />,
-              title: 'Original Reporting',
-              body: 'On-the-ground stories from local leagues, community clubs, and the people who make grassroots sport thrive.',
-            },
-            {
-              icon: <PenLine size={28} className="text-[#d97706]" />,
-              title: 'Opinion & Longform',
-              body: 'Thoughtful essays and cultural criticism exploring what sport means to the communities that live it.',
-            },
-            {
-              icon: <Users size={28} className="text-[#d97706]" />,
-              title: 'Community First',
-              body: 'Amplifying voices from the terraces, the training pitches, and the fan communities that drive real football.',
-            },
-          ].map(({ icon, title, body }, i) => (
-            <div
-              key={title}
-              className="bg-white border border-[#e5e0d8] rounded-sm p-7 animate-fade-up"
-              style={{ animationDelay: `${i * 120}ms` }}
-            >
-              <div className="mb-4">{icon}</div>
-              <h3 className="font-display text-xl font-bold text-[#0f172a] mb-3">{title}</h3>
-              <p className="text-sm text-[#4b4540] leading-relaxed">{body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Fading gradient overlays for readability */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30" />
+      <div className="absolute inset-0 bg-black/20" />
 
-      {/* About strip */}
-      <section className="bg-[#fef9e6] border-y border-[#e5e0d8] py-16">
-        <div className="container max-w-3xl text-center">
-          <p className="font-mono text-xs uppercase tracking-widest text-[#d97706] mb-4">About us</p>
-          <h2 className="font-display text-3xl font-bold text-[#0f172a] mb-5">
-            Wholly owned by Eimemes Pvt Ltd
-          </h2>
-          <p className="text-[#4b4540] leading-relaxed mb-8">
-            Based in Mumbai, our team of journalists and contributors operate with full editorial independence.
-            We are committed to factual storytelling, deep analysis, and elevating community voices —
-            including the rise of Kuki FC.
-          </p>
-          <Link href="/about" className="btn-primary">
-            Read our mission <ArrowRight size={14} />
+      {/* Content */}
+      <div className="container relative z-10 text-center max-w-3xl mx-auto">
+        <p className="text-[#d97706] font-mono text-xs uppercase tracking-widest mb-5">
+          Welcome to
+        </p>
+        <h1 className="font-display text-5xl md:text-7xl font-black leading-none mb-6">
+          Eimemes
+        </h1>
+        <p className="text-slate-300 text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-10">
+          A digital platform built for and by Eimi youths. Founded in 2025 and wholly owned
+          by <strong>Eimeme Pvt Ltd</strong>, we exist to entertain, uplift, and connect a
+          generation that deserves its own space on the internet. From memes that hit too
+          close to home to content that genuinely guides and inspires — we cover what matters
+          to young Eimi people with humour, heart, and zero filter.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link href="/about" className="btn-primary text-base px-7 py-3">
+            Our Story
+          </Link>
+          <Link
+            href="/contact"
+            className="btn-ghost text-base px-7 py-3 border-slate-600 text-slate-300 hover:bg-slate-800 hover:border-slate-500"
+          >
+            Get in touch
           </Link>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }
