@@ -39,10 +39,8 @@ export default async function HomePage() {
   return (
     <>
       <Header />
-      {/* main uses flex column when empty to push footer down */}
-      <main className={`min-h-screen ${hasContent ? '' : 'flex flex-col'}`}>
+      <main className="min-h-screen">
         {hasContent ? (
-          /* ─── POPULATED STATE ──────────────────────────────────────── */
           <div className="container py-10">
             {featured && (
               <FeaturedArticle article={JSON.parse(JSON.stringify(featured))} />
@@ -83,10 +81,7 @@ export default async function HomePage() {
             )}
           </div>
         ) : (
-          /* ─── EMPTY / BRAND STATE (fills remaining height) ─────────── */
-          <div className="flex-1 flex">
-            <EmptyHomepage />
-          </div>
+          <EmptyHomepage />
         )}
       </main>
       <Footer />
@@ -96,8 +91,7 @@ export default async function HomePage() {
 
 function EmptyHomepage() {
   return (
-    // h-full ensures the section fills the entire flex container height
-    <section className="relative bg-[#0f172a] text-white h-full w-full flex items-center overflow-hidden">
+    <section className="relative bg-[#0f172a] text-white min-h-[90vh] flex items-center overflow-hidden">
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -126,13 +120,14 @@ function EmptyHomepage() {
           close to home to content that genuinely guides and inspires — we cover what matters
           to young Eimi people with humour, heart, and zero filter.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        {/* Buttons – aligned center, consistent styling */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link href="/about" className="btn-primary text-base px-7 py-3">
             Our Story
           </Link>
           <Link
             href="/contact"
-            className="bg-white text-[#0f172a] font-semibold px-7 py-3 rounded-sm hover:bg-slate-200 transition-colors inline-block"
+            className="inline-flex items-center justify-center bg-white text-[#0f172a] font-semibold px-7 py-3 rounded-sm hover:bg-slate-200 transition-colors"
           >
             Get in touch
           </Link>
