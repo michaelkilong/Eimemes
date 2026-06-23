@@ -30,7 +30,7 @@ export default function TermsPage() {
               Welcome to Eimemes. By using this website, you agree to these Terms of
               Service. If you do not agree, please stop using the site. These Terms are
               governed by Indian law, and any disputes will be subject to the courts in
-              [Your City], India.
+              Kangpokpi, India.
             </p>
 
             <section>
