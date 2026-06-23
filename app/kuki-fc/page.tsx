@@ -32,7 +32,7 @@ export default async function KukiFCPage() {
     <>
       <Header />
       <main>
-        {/* Hero — football background + fading black */}
+        {/* Hero — stronger fading black overlay for readability */}
         <div className="relative py-24 text-center overflow-hidden">
           {/* Background image */}
           <div
@@ -43,9 +43,9 @@ export default async function KukiFCPage() {
             }}
           />
 
-          {/* Fading black overlays */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-          <div className="absolute inset-0 bg-black/20" />
+          {/* Fading black overlays — increased darkness */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
+          <div className="absolute inset-0 bg-black/30" />
 
           <div className="container relative z-10">
             {/* Logo */}
@@ -71,7 +71,6 @@ export default async function KukiFCPage() {
               <Link href="/kuki-fc/shop" className="btn-primary px-6 py-3">
                 <ShoppingBag size={16} /> Shop
               </Link>
-              {/* ✅ Updated “Our Branches” button for visibility */}
               <Link
                 href="#branches"
                 className="inline-flex items-center gap-2 px-6 py-3 border-2 border-white text-white font-medium text-sm uppercase tracking-wider hover:bg-white hover:text-[#0f172a] transition-colors rounded-sm"
