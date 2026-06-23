@@ -112,10 +112,11 @@ export default async function ProductPage({ params }: Props) {
               )}
             </div>
 
-            {/* WhatsApp order button — client component */}
+            {/* WhatsApp order button — now with productSlug */}
             {p.inStock && (
               <WhatsAppOrder
                 productName={p.name}
+                productSlug={p.slug}
                 price={p.price}
                 whatsappNumber={p.whatsappNumber}
                 sizes={p.sizes}
@@ -139,4 +140,3 @@ export default async function ProductPage({ params }: Props) {
     </>
   );
 }
-              
