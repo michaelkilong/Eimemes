@@ -13,7 +13,13 @@ interface GalleryItem {
   imageUrl: string;
   category: string;
   status: string;
-  branch?: string;   // NEW
+  branch?: string;
+}
+
+interface BranchOption {
+  _id: string;
+  name: string;
+  slug: string;
 }
 
 const EMPTY_FORM = {
@@ -22,7 +28,7 @@ const EMPTY_FORM = {
   imageUrl: '',
   category: 'General',
   status: 'published',
-  branch: '',        // NEW
+  branch: '',
 };
 
 export default function AdminGalleryPage() {
@@ -34,13 +40,19 @@ export default function AdminGalleryPage() {
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [branches, setBranches] = useState<BranchOption[]>([]); // NEW
 
   const load = async () => {
     setLoading(true);
-    const res = await fetch('/api/gallery', { credentials: 'include' });
-    if (!res.ok) { router.push('/control-panel-92x'); return; }
-    const data = await res.json();
-    setItems(data.items || []);
+    const [galleryRes, branchRes] = await Promise.all([
+      fetch('/api/gallery', { credentials: 'include' }),
+      fetch('/api/kuki-fc/branches', { credentials: 'include' }),
+    ]);
+    if (!galleryRes.ok) { router.push('/control-panel-92x'); return; }
+    const galleryData = await galleryRes.json();
+    const branchData = await branchRes.json();
+    setItems(galleryData.items || []);
+    setBranches(branchData.branches || []);
     setLoading(false);
   };
 
@@ -75,7 +87,7 @@ export default function AdminGalleryPage() {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),   // now includes branch
+        body: JSON.stringify(form),
       });
       if (!res.ok) throw new Error('Failed to add');
       toast.success('Item added');
@@ -197,17 +209,21 @@ export default function AdminGalleryPage() {
                     />
                   </div>
 
-                  {/* NEW: Branch slug */}
+                  {/* Branch selector dropdown */}
                   <div>
-                    <label className={labelClass}>
-                      Branch slug <span className="text-slate-600 font-normal">(e.g. mumbai-seniors)</span>
-                    </label>
-                    <input
+                    <label className={labelClass}>Branch</label>
+                    <select
                       className={inputClass}
                       value={form.branch}
                       onChange={e => setForm(f => ({ ...f, branch: e.target.value }))}
-                      placeholder="Leave empty for general gallery"
-                    />
+                    >
+                      <option value="">— General (no branch) —</option>
+                      {branches.map(b => (
+                        <option key={b._id} value={b.slug}>
+                          {b.name} ({b.slug})
+                        </option>
+                      ))}
+                    </select>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
