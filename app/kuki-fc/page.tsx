@@ -20,7 +20,9 @@ async function getBranches() {
     await connectDB();
     const branches = await Branch.find({ active: true }).sort({ createdAt: 1 }).lean();
     return JSON.parse(JSON.stringify(branches));
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 export default async function KukiFCPage() {
@@ -30,18 +32,31 @@ export default async function KukiFCPage() {
     <>
       <Header />
       <main>
-        {/* Hero */}
-        <div className="bg-[#0f172a] py-24 text-center relative overflow-hidden">
-          <div className="absolute inset-0 opacity-5"
+        {/* Hero — with football background & fading black */}
+        <div className="relative py-24 text-center overflow-hidden">
+          {/* Background image */}
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
             style={{
-              backgroundImage: 'repeating-linear-gradient(0deg,#fff 0,#fff 1px,transparent 0,transparent 40px), repeating-linear-gradient(90deg,#fff 0,#fff 1px,transparent 0,transparent 40px)',
-              backgroundSize: '40px 40px',
+              backgroundImage:
+                "url('https://i.ibb.co/fVpCPXyK/7-DAB2067-7225-49-AD-B81-B-98002-DE32-B27.jpg')",
             }}
           />
+
+          {/* Fading black overlays */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-black/20" />
+
           <div className="container relative z-10">
+            {/* Logo — now using your correct direct URL */}
             <div className="w-24 h-24 mx-auto mb-6">
-             <img src="https://ibb.co/LX8zZmLz" alt="Kuki FC Logo" className="w-full h-full object-contain rounded-full"/>
+              <img
+                src="https://i.ibb.co/hx2zzpkK/469-B42-C4-3-CF4-467-E-88-BE-F24840-CC9-D52.jpg"
+                alt="Kuki FC Logo"
+                className="w-full h-full object-contain rounded-full"
+              />
             </div>
+
             <h1 className="font-display text-5xl md:text-7xl font-black text-white mb-4">
               Kuki FC
             </h1>
@@ -56,7 +71,10 @@ export default async function KukiFCPage() {
               <Link href="/kuki-fc/shop" className="btn-primary px-6 py-3">
                 <ShoppingBag size={16} /> Shop
               </Link>
-              <Link href="#branches" className="btn-ghost border-slate-600 text-slate-300 hover:bg-slate-800 px-6 py-3">
+              <Link
+                href="#branches"
+                className="btn-ghost border-slate-600 text-slate-300 hover:bg-slate-800 px-6 py-3"
+              >
                 <MapPin size={16} /> Our Branches
               </Link>
             </div>
@@ -74,7 +92,9 @@ export default async function KukiFCPage() {
               ].map(({ label, value }) => (
                 <div key={label}>
                   <p className="text-white font-display font-bold text-2xl">{value}</p>
-                  <p className="text-amber-100 text-xs font-mono uppercase tracking-widest">{label}</p>
+                  <p className="text-amber-100 text-xs font-mono uppercase tracking-widest">
+                    {label}
+                  </p>
                 </div>
               ))}
             </div>
@@ -84,7 +104,9 @@ export default async function KukiFCPage() {
         {/* Branches */}
         <div id="branches" className="container py-16">
           <div className="mb-10">
-            <p className="font-mono text-xs text-[#d97706] uppercase tracking-widest mb-2">Our clubs</p>
+            <p className="font-mono text-xs text-[#d97706] uppercase tracking-widest mb-2">
+              Our clubs
+            </p>
             <h2 className="font-display text-3xl font-bold text-[#0f172a]">Branches</h2>
           </div>
 
@@ -105,7 +127,9 @@ export default async function KukiFCPage() {
                   <div className="relative h-48 bg-[#0f172a] overflow-hidden">
                     {branch.coverImage ? (
                       <Image
-                        src={branch.coverImage} alt={branch.name} fill
+                        src={branch.coverImage}
+                        alt={branch.name}
+                        fill
                         className="object-cover opacity-70 group-hover:scale-105 transition-transform duration-500"
                         sizes="400px"
                       />
@@ -147,7 +171,9 @@ export default async function KukiFCPage() {
         <div className="bg-[#0f172a] py-16">
           <div className="container text-center">
             <ShoppingBag size={40} className="text-[#d97706] mx-auto mb-4" />
-            <h2 className="font-display text-3xl font-bold text-white mb-3">Official Kuki FC Shop</h2>
+            <h2 className="font-display text-3xl font-bold text-white mb-3">
+              Official Kuki FC Shop
+            </h2>
             <p className="text-slate-400 mb-6 max-w-md mx-auto">
               Jerseys, scarves, caps and more. Wear your colours with pride.
             </p>
@@ -161,4 +187,3 @@ export default async function KukiFCPage() {
     </>
   );
 }
-              
