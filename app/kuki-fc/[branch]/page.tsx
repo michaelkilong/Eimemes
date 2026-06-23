@@ -60,7 +60,7 @@ export default async function BranchPage({ params }: Props) {
     <>
       <Header />
       <main>
-        {/* Hero — unchanged */}
+        {/* Hero */}
         <div className="relative bg-[#0f172a] py-20">
           {branch.coverImage && (
             <>
@@ -100,7 +100,7 @@ export default async function BranchPage({ params }: Props) {
           </div>
         </div>
 
-        {/* Quick nav — unchanged */}
+        {/* Quick nav */}
         <div className="bg-white border-b border-[#e5e0d8] sticky top-0 z-40">
           <div className="container flex gap-0">
             {[
@@ -122,10 +122,9 @@ export default async function BranchPage({ params }: Props) {
             {/* Main content */}
             <div className="lg:col-span-2 space-y-10">
 
-              {/* Squad preview — redesigned heading and player cards */}
+              {/* Squad preview */}
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  {/* Replaced orange left border with a bottom accent */}
                   <h2 className="font-display text-2xl font-bold text-[#0f172a] pb-2 border-b-2 border-[#d97706] inline-block">
                     Squad
                   </h2>
@@ -140,38 +139,54 @@ export default async function BranchPage({ params }: Props) {
                     <p className="text-[#6b7280] text-sm">Squad not announced yet</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     {players.slice(0, 6).map((player: any) => (
-                      <div key={player._id} className="bg-white border border-[#e5e0d8] rounded-sm overflow-hidden hover:shadow-md transition-shadow">
-                        {/* Full-width player photo */}
-                        <div className="relative w-full h-40 bg-[#0f172a]">
+                      <div key={player._id} className="bg-white border border-[#e5e0d8] rounded-sm p-4 text-center">
+                        {/* Photo area – now using squad page reference: relative, fill, badges */}
+                        <div className="relative w-14 h-14 rounded-md bg-[#0f172a] mx-auto mb-3 overflow-hidden">
                           {player.photo ? (
-                            <Image src={player.photo} alt={player.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
+                            <Image
+                              src={player.photo}
+                              alt={player.name}
+                              fill
+                              className="object-cover object-top"
+                              sizes="56px"
+                            />
                           ) : (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <span className="text-white/40 font-display font-black text-5xl">{player.name.charAt(0)}</span>
+                            <span className="absolute inset-0 flex items-center justify-center text-white font-display font-bold text-xl">
+                              {player.name.charAt(0)}
+                            </span>
+                          )}
+                          {/* Number badge (top right) – like squad page */}
+                          {player.number > 0 && (
+                            <div className="absolute top-0.5 right-0.5 bg-[#d97706] text-white font-mono font-bold text-[9px] w-5 h-5 rounded-full flex items-center justify-center shadow">
+                              {player.number}
+                            </div>
+                          )}
+                          {/* Captain badge (top left) */}
+                          {player.isCaptain && (
+                            <div className="absolute top-0.5 left-0.5 bg-[#0f172a]/80 text-[#d97706] font-mono text-[8px] uppercase px-1.5 py-0.5 rounded-sm">
+                              C
                             </div>
                           )}
                         </div>
-                        <div className="p-4">
-                          {player.number > 0 && (
-                            <p className="text-[#d97706] font-mono font-bold text-sm mb-0.5">#{player.number}</p>
-                          )}
-                          <p className="font-semibold text-[#0f172a] text-sm">{player.name}</p>
-                          <p className="text-xs text-[#6b7280] font-mono">{player.position}</p>
-                          {player.isCaptain && (
-                            <span className="text-[10px] font-mono bg-[#d97706]/15 text-[#d97706] px-2 py-0.5 rounded-sm mt-2 inline-block">
-                              Captain
-                            </span>
-                          )}
-                        </div>
+                        {player.number > 0 && (
+                          <p className="text-[#d97706] font-mono font-bold text-sm mb-0.5">#{player.number}</p>
+                        )}
+                        <p className="font-semibold text-[#0f172a] text-sm">{player.name}</p>
+                        <p className="text-xs text-[#6b7280] font-mono">{player.position}</p>
+                        {player.isCaptain && (
+                          <span className="text-[10px] font-mono bg-[#d97706]/15 text-[#d97706] px-2 py-0.5 rounded-sm mt-1 inline-block">
+                            Captain
+                          </span>
+                        )}
                       </div>
                     ))}
                   </div>
                 )}
               </div>
 
-              {/* Recent results — redesigned heading */}
+              {/* Recent results */}
               {recent.length > 0 && (
                 <div>
                   <h2 className="font-display text-2xl font-bold text-[#0f172a] pb-2 border-b-2 border-[#d97706] inline-block mb-6">
@@ -205,7 +220,7 @@ export default async function BranchPage({ params }: Props) {
               )}
             </div>
 
-            {/* Sidebar — upcoming fixtures with redesigned heading */}
+            {/* Sidebar */}
             <div>
               <h2 className="font-display text-xl font-bold text-[#0f172a] pb-2 border-b-2 border-[#d97706] inline-block mb-6">
                 Upcoming
