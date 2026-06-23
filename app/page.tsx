@@ -41,7 +41,6 @@ export default async function HomePage() {
       <Header />
       <main className="min-h-screen">
         {hasContent ? (
-          /* ─── POPULATED STATE ──────────────────────────────────────── */
           <div className="container py-10">
             {featured && (
               <FeaturedArticle article={JSON.parse(JSON.stringify(featured))} />
@@ -82,7 +81,6 @@ export default async function HomePage() {
             )}
           </div>
         ) : (
-          /* ─── EMPTY / BRAND STATE ──────────────────────────────────── */
           <EmptyHomepage />
         )}
       </main>
@@ -103,11 +101,10 @@ function EmptyHomepage() {
         }}
       />
 
-      {/* Fading gradient overlays for readability */}
+      {/* Fading gradient overlays */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30" />
       <div className="absolute inset-0 bg-black/20" />
 
-      {/* Content */}
       <div className="container relative z-10 text-center max-w-4xl mx-auto">
         <p className="text-[#d97706] font-mono text-xs uppercase tracking-widest mb-5">
           Welcome to
@@ -122,16 +119,18 @@ function EmptyHomepage() {
           close to home to content that genuinely guides and inspires — we cover what matters
           to young Eimi people with humour, heart, and zero filter.
         </p>
+
+        {/* Identical buttons – fixed width, fixed height */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Link
             href="/about"
-            className="inline-flex items-center justify-center text-base font-semibold px-7 py-3 rounded-sm transition-colors bg-[#d97706] text-white hover:bg-[#b45309]"
+            className="inline-flex items-center justify-center w-48 h-12 text-base font-semibold rounded-sm transition-colors bg-[#d97706] text-white hover:bg-[#b45309] leading-none"
           >
             Our Story
           </Link>
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center text-base font-semibold px-7 py-3 rounded-sm transition-colors bg-white text-[#0f172a] hover:bg-slate-200"
+            className="inline-flex items-center justify-center w-48 h-12 text-base font-semibold rounded-sm transition-colors bg-white text-[#0f172a] hover:bg-slate-200 leading-none"
           >
             Get in touch
           </Link>
