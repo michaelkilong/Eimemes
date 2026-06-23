@@ -56,13 +56,11 @@ export default async function BranchPage({ params }: Props) {
     loss: 'bg-red-500/15 text-red-400 border-red-500/20',
   };
 
-  const positionOrder = ['Goalkeeper', 'Defender', 'Midfielder', 'Forward'];
-
   return (
     <>
       <Header />
       <main>
-        {/* Hero */}
+        {/* Hero — unchanged */}
         <div className="relative bg-[#0f172a] py-20">
           {branch.coverImage && (
             <>
@@ -78,7 +76,7 @@ export default async function BranchPage({ params }: Props) {
               {branch.logo ? (
                 <Image src={branch.logo} alt={branch.name} width={72} height={72} className="rounded-full" />
               ) : (
-                <div className="w-18 h-18 bg-[#d97706] rounded-full flex items-center justify-center w-16 h-16">
+                <div className="w-16 h-16 bg-[#d97706] rounded-full flex items-center justify-center">
                   <span className="text-white font-display font-black text-xl">KFC</span>
                 </div>
               )}
@@ -102,7 +100,7 @@ export default async function BranchPage({ params }: Props) {
           </div>
         </div>
 
-        {/* Quick nav */}
+        {/* Quick nav — unchanged */}
         <div className="bg-white border-b border-[#e5e0d8] sticky top-0 z-40">
           <div className="container flex gap-0">
             {[
@@ -124,10 +122,11 @@ export default async function BranchPage({ params }: Props) {
             {/* Main content */}
             <div className="lg:col-span-2 space-y-10">
 
-              {/* Squad preview */}
+              {/* Squad preview — redesigned heading and player cards */}
               <div>
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="font-display text-2xl font-bold text-[#0f172a] border-l-4 border-[#d97706] pl-4">
+                  {/* Replaced orange left border with a bottom accent */}
+                  <h2 className="font-display text-2xl font-bold text-[#0f172a] pb-2 border-b-2 border-[#d97706] inline-block">
                     Squad
                   </h2>
                   <Link href={`/kuki-fc/${params.branch}/squad`}
@@ -141,38 +140,41 @@ export default async function BranchPage({ params }: Props) {
                     <p className="text-[#6b7280] text-sm">Squad not announced yet</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {players.slice(0, 6).map((player: any) => (
-                      <div key={player._id} className="bg-white border border-[#e5e0d8] rounded-sm p-4 text-center">
-                        <div className="w-14 h-14 rounded-full bg-[#0f172a] mx-auto mb-3 overflow-hidden flex items-center justify-center">
+                      <div key={player._id} className="bg-white border border-[#e5e0d8] rounded-sm overflow-hidden hover:shadow-md transition-shadow">
+                        {/* Full-width player photo */}
+                        <div className="relative w-full h-40 bg-[#0f172a]">
                           {player.photo ? (
-                            <Image src={player.photo} alt={player.name} width={56} height={56} className="object-cover" />
+                            <Image src={player.photo} alt={player.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" />
                           ) : (
-                            <span className="text-white font-display font-bold text-xl">
-                              {player.name.charAt(0)}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <span className="text-white/40 font-display font-black text-5xl">{player.name.charAt(0)}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="p-4">
+                          {player.number > 0 && (
+                            <p className="text-[#d97706] font-mono font-bold text-sm mb-0.5">#{player.number}</p>
+                          )}
+                          <p className="font-semibold text-[#0f172a] text-sm">{player.name}</p>
+                          <p className="text-xs text-[#6b7280] font-mono">{player.position}</p>
+                          {player.isCaptain && (
+                            <span className="text-[10px] font-mono bg-[#d97706]/15 text-[#d97706] px-2 py-0.5 rounded-sm mt-2 inline-block">
+                              Captain
                             </span>
                           )}
                         </div>
-                        {player.number > 0 && (
-                          <p className="text-[#d97706] font-mono font-bold text-sm mb-0.5">#{player.number}</p>
-                        )}
-                        <p className="font-semibold text-[#0f172a] text-sm">{player.name}</p>
-                        <p className="text-xs text-[#6b7280] font-mono">{player.position}</p>
-                        {player.isCaptain && (
-                          <span className="text-[10px] font-mono bg-[#d97706]/15 text-[#d97706] px-2 py-0.5 rounded-sm mt-1 inline-block">
-                            Captain
-                          </span>
-                        )}
                       </div>
                     ))}
                   </div>
                 )}
               </div>
 
-              {/* Recent results */}
+              {/* Recent results — redesigned heading */}
               {recent.length > 0 && (
                 <div>
-                  <h2 className="font-display text-2xl font-bold text-[#0f172a] border-l-4 border-[#d97706] pl-4 mb-6">
+                  <h2 className="font-display text-2xl font-bold text-[#0f172a] pb-2 border-b-2 border-[#d97706] inline-block mb-6">
                     Recent Results
                   </h2>
                   <div className="space-y-3">
@@ -203,9 +205,9 @@ export default async function BranchPage({ params }: Props) {
               )}
             </div>
 
-            {/* Sidebar — upcoming fixtures */}
+            {/* Sidebar — upcoming fixtures with redesigned heading */}
             <div>
-              <h2 className="font-display text-xl font-bold text-[#0f172a] border-l-4 border-[#d97706] pl-4 mb-6">
+              <h2 className="font-display text-xl font-bold text-[#0f172a] pb-2 border-b-2 border-[#d97706] inline-block mb-6">
                 Upcoming
               </h2>
               {upcoming.length === 0 ? (
@@ -246,4 +248,3 @@ export default async function BranchPage({ params }: Props) {
     </>
   );
 }
-
