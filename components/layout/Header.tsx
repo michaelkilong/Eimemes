@@ -35,16 +35,25 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Logo + hamburger row — now with shadow for separation */}
+      {/* Logo + hamburger row — with shadow and circular logo */}
       <div className="border-b border-[#e5e0d8] shadow-sm">
         <div className="container flex items-center justify-between py-5">
-          <Link href="/" className="group flex flex-col gap-0.5">
-            <h1 className="font-display text-[2.4rem] font-black leading-none tracking-tight text-[#0f172a] group-hover:text-[#d97706] transition-colors duration-200">
-              Eimemes
-            </h1>
-            <p className="text-[11px] text-[#6b7280] font-mono uppercase tracking-widest">
-              “Eimi te adin, EIMEMES a um e!”
-            </p>
+          {/* Branding: circular logo + Eimemes text */}
+          <Link href="/" className="group flex items-center gap-3">
+            {/* Circular logo, same height as heading */}
+            <img
+              src="https://i.ibb.co/PzfH7bDM/C5717-A91-2593-4374-961-E-76-E18-F1322-DD.jpg"
+              alt="Eimemes Logo"
+              className="h-[2.4rem] w-[2.4rem] rounded-full object-cover flex-shrink-0"
+            />
+            <div className="flex flex-col gap-0.5">
+              <h1 className="font-display text-[2.4rem] font-black leading-none tracking-tight text-[#0f172a] group-hover:text-[#d97706] transition-colors duration-200">
+                Eimemes
+              </h1>
+              <p className="text-[11px] text-[#6b7280] font-mono uppercase tracking-widest">
+                “Eimi te adin, EIMEMES a um e!”
+              </p>
+            </div>
           </Link>
 
           <div className="flex items-center gap-3">
