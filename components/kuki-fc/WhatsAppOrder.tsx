@@ -4,19 +4,29 @@ import { useState } from 'react';
 
 interface Props {
   productName: string;
+  productSlug: string;
   price: number;
   whatsappNumber: string;
   sizes: string[];
 }
 
-export default function WhatsAppOrder({ productName, price, whatsappNumber, sizes }: Props) {
+export default function WhatsAppOrder({
+  productName,
+  productSlug,
+  price,
+  whatsappNumber,
+  sizes,
+}: Props) {
   const [selectedSize, setSelectedSize] = useState('');
 
   const handleOrder = () => {
     const sizeText = selectedSize ? `Size: ${selectedSize}` : '';
-    const message = `Hi! I'd like to order:\n\n*${productName}*\n${sizeText}\nPrice: ₹${price.toLocaleString('en-IN')}\n\nPlease confirm availability and delivery details.`;
+    const message = `Hi! I'd like to order:\n\n*${productName}* (${productSlug})\n${sizeText}\nPrice: ₹${price.toLocaleString('en-IN')}\n\nPlease confirm availability and delivery details.`;
     const clean = whatsappNumber.replace(/\D/g, '');
-    window.open(`https://wa.me/${clean}?text=${encodeURIComponent(message)}`, '_blank');
+    window.open(
+      `https://wa.me/${clean}?text=${encodeURIComponent(message)}`,
+      '_blank'
+    );
   };
 
   return (
@@ -27,7 +37,7 @@ export default function WhatsAppOrder({ productName, price, whatsappNumber, size
             Select Size
           </p>
           <div className="flex flex-wrap gap-2">
-            {sizes.map(size => (
+            {sizes.map((size) => (
               <button
                 key={size}
                 onClick={() => setSelectedSize(size)}
@@ -54,7 +64,7 @@ export default function WhatsAppOrder({ productName, price, whatsappNumber, size
         Order on WhatsApp
       </button>
       <p className="text-xs text-center text-[#6b7280] font-mono">
-        Opens WhatsApp with your order details pre-filled
+        Opens WhatsApp with your order details pre‑filled
       </p>
     </div>
   );
