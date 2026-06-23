@@ -60,13 +60,14 @@ export default async function SquadPage({ params }: Props) {
           </div>
         </div>
 
-        {/* Branch nav */}
+        {/* Branch nav — Photos tab added */}
         <div className="bg-white border-b border-[#e5e0d8]">
           <div className="container flex gap-0">
             {[
               { href: `/kuki-fc/${params.branch}`, label: 'Overview' },
               { href: `/kuki-fc/${params.branch}/squad`, label: 'Squad' },
               { href: `/kuki-fc/${params.branch}/fixtures`, label: 'Fixtures' },
+              { href: `/kuki-fc/${params.branch}/photos`, label: 'Photos' },
             ].map(({ href, label }) => (
               <Link key={href} href={href}
                 className={`px-5 py-3.5 text-sm font-medium border-b-2 transition-all ${
@@ -97,8 +98,6 @@ export default async function SquadPage({ params }: Props) {
                     {posPlayers.map((player: any) => (
                       <div key={player._id}
                         className="bg-white border border-[#e5e0d8] rounded-sm overflow-hidden card-hover">
-
-                        {/* Full photo */}
                         <div className="relative w-full h-52 bg-[#0f172a] overflow-hidden">
                           {player.photo ? (
                             <Image
@@ -115,21 +114,17 @@ export default async function SquadPage({ params }: Props) {
                               </span>
                             </div>
                           )}
-                          {/* Number badge */}
                           {player.number > 0 && (
                             <div className="absolute top-2 right-2 bg-[#d97706] text-white font-mono font-bold text-xs w-7 h-7 rounded-full flex items-center justify-center">
                               {player.number}
                             </div>
                           )}
-                          {/* Captain badge */}
                           {player.isCaptain && (
                             <div className="absolute top-2 left-2 bg-[#0f172a]/80 text-[#d97706] font-mono text-[9px] uppercase tracking-wide px-2 py-0.5 rounded-sm">
                               Captain
                             </div>
                           )}
                         </div>
-
-                        {/* Details */}
                         <div className="p-3 text-center">
                           <p className="font-semibold text-[#0f172a] text-sm">{player.name}</p>
                           <p className="text-xs text-[#6b7280] font-mono mt-0.5">{player.nationality}</p>
