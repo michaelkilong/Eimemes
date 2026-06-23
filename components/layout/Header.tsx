@@ -1,4 +1,3 @@
-
 'use client';
 // components/layout/Header.tsx
 import Link from 'next/link';
@@ -36,32 +35,35 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Logo + hamburger row */}
-      <div className="container flex items-center justify-between py-5">
-        <Link href="/" className="group flex flex-col gap-0.5">
-          <h1 className="font-display text-[2.4rem] font-black leading-none tracking-tight text-[#0f172a] group-hover:text-[#d97706] transition-colors duration-200">
-            Eimemes
-          </h1>
-          <p className="text-[11px] text-[#6b7280] font-mono uppercase tracking-widest">
-            “Eimi te adin, EIMEMES a um e!”
-          </p>
-        </Link>
+      {/* Logo + hamburger row — now with shadow for separation */}
+      <div className="border-b border-[#e5e0d8] shadow-sm">
+        <div className="container flex items-center justify-between py-5">
+          <Link href="/" className="group flex flex-col gap-0.5">
+            <h1 className="font-display text-[2.4rem] font-black leading-none tracking-tight text-[#0f172a] group-hover:text-[#d97706] transition-colors duration-200">
+              Eimemes
+            </h1>
+            <p className="text-[11px] text-[#6b7280] font-mono uppercase tracking-widest">
+              “Eimi te adin, EIMEMES a um e!”
+            </p>
+          </Link>
 
-        <div className="flex items-center gap-3">
-          <a
-            href="mailto:editorial@eimemes.com"
-            className="hidden md:inline-block text-xs text-[#6b7280] hover:text-[#d97706] transition-colors font-mono"
-          >
-            editorial@eimemes.com
-          </a>
-          {/* Hamburger – placed here, same row as logo, top right on mobile */}
-          <button
-            className="md:hidden p-2 rounded text-[#1e293b] hover:bg-[#f0ece4] transition-colors"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
-          >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          <div className="flex items-center gap-3">
+            <a
+              href="mailto:editorial@eimemes.com"
+              className="hidden md:inline-block text-xs text-[#6b7280] hover:text-[#d97706] transition-colors font-mono"
+            >
+              editorial@eimemes.com
+            </a>
+
+            {/* Hamburger – visible only on mobile, placed here */}
+            <button
+              className="md:hidden p-2 rounded text-[#1e293b] hover:bg-[#f0ece4] transition-colors"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label="Toggle menu"
+            >
+              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
       </div>
 
