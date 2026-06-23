@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: '“Eimi te adin, Eimems a um e!”.',
 };
 
-export const revalidate = 60; // ISR: revalidate every 60s
+export const revalidate = 60;
 
 async function getArticles() {
   try {
@@ -39,7 +39,8 @@ export default async function HomePage() {
   return (
     <>
       <Header />
-      <main className="min-h-screen">
+      {/* main uses flex column when empty to push footer down */}
+      <main className={`min-h-screen ${hasContent ? '' : 'flex flex-col'}`}>
         {hasContent ? (
           /* ─── POPULATED STATE ──────────────────────────────────────── */
           <div className="container py-10">
@@ -82,7 +83,10 @@ export default async function HomePage() {
             )}
           </div>
         ) : (
-          <EmptyHomepage />
+          /* ─── EMPTY / BRAND STATE (fills remaining height) ─────────── */
+          <div className="flex-1 flex">
+            <EmptyHomepage />
+          </div>
         )}
       </main>
       <Footer />
@@ -92,7 +96,8 @@ export default async function HomePage() {
 
 function EmptyHomepage() {
   return (
-    <section className="relative bg-[#0f172a] text-white min-h-[90vh] flex items-center overflow-hidden">
+    // h-full ensures the section fills the entire flex container height
+    <section className="relative bg-[#0f172a] text-white h-full w-full flex items-center overflow-hidden">
       {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
