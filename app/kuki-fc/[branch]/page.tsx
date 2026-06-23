@@ -100,16 +100,21 @@ export default async function BranchPage({ params }: Props) {
           </div>
         </div>
 
-        {/* Quick nav */}
+        {/* Quick nav — Photos tab added */}
         <div className="bg-white border-b border-[#e5e0d8] sticky top-0 z-40">
           <div className="container flex gap-0">
             {[
               { href: `/kuki-fc/${params.branch}`, label: 'Overview' },
               { href: `/kuki-fc/${params.branch}/squad`, label: 'Squad' },
               { href: `/kuki-fc/${params.branch}/fixtures`, label: 'Fixtures' },
+              { href: `/kuki-fc/${params.branch}/photos`, label: 'Photos' },
             ].map(({ href, label }) => (
               <Link key={href} href={href}
-                className="px-5 py-3.5 text-sm font-medium border-b-2 border-transparent text-[#1e293b] hover:text-[#d97706] hover:border-[#d97706] transition-all">
+                className={`px-5 py-3.5 text-sm font-medium border-b-2 transition-all ${
+                  href.endsWith(`/${params.branch}`)
+                    ? 'border-[#d97706] text-[#d97706]'
+                    : 'border-transparent text-[#1e293b] hover:text-[#d97706] hover:border-[#d97706]'
+                }`}>
                 {label}
               </Link>
             ))}
@@ -142,7 +147,7 @@ export default async function BranchPage({ params }: Props) {
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     {players.slice(0, 6).map((player: any) => (
                       <div key={player._id} className="bg-white border border-[#e5e0d8] rounded-sm p-4 text-center">
-                        {/* Photo area – now using squad page reference: relative, fill, badges */}
+                        {/* Photo area */}
                         <div className="relative w-14 h-14 rounded-md bg-[#0f172a] mx-auto mb-3 overflow-hidden">
                           {player.photo ? (
                             <Image
@@ -157,13 +162,11 @@ export default async function BranchPage({ params }: Props) {
                               {player.name.charAt(0)}
                             </span>
                           )}
-                          {/* Number badge (top right) – like squad page */}
                           {player.number > 0 && (
                             <div className="absolute top-0.5 right-0.5 bg-[#d97706] text-white font-mono font-bold text-[9px] w-5 h-5 rounded-full flex items-center justify-center shadow">
                               {player.number}
                             </div>
                           )}
-                          {/* Captain badge (top left) */}
                           {player.isCaptain && (
                             <div className="absolute top-0.5 left-0.5 bg-[#0f172a]/80 text-[#d97706] font-mono text-[8px] uppercase px-1.5 py-0.5 rounded-sm">
                               C
