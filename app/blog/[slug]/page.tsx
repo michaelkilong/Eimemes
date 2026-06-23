@@ -72,12 +72,12 @@ export default async function BlogPostPage({ params }: Props) {
     <>
       <Header />
       <main>
-        {/* Hero */}
+        {/* Hero — stronger gradient for readability */}
         <div className={`${serialized.coverImage ? 'relative' : 'bg-[#0f172a]'} py-20`}>
           {serialized.coverImage && (
             <>
-              <Image src={serialized.coverImage} alt={serialized.title} fill className="object-cover opacity-30" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a] to-[#0f172a]/60" />
+              <Image src={serialized.coverImage} alt={serialized.title} fill className="object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
             </>
           )}
           <div className="container relative z-10 max-w-3xl mx-auto text-center text-white">
@@ -98,7 +98,7 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         </div>
 
-        {/* Content */}
+        {/* Content — no extra bg wrapper, white from body */}
         <div className="container py-12">
           <div className="max-w-2xl mx-auto">
             <p className="text-xl leading-relaxed font-display italic text-[#2d2926] mb-8 pb-8 border-b border-[#e5e0d8]">
@@ -106,7 +106,6 @@ export default async function BlogPostPage({ params }: Props) {
             </p>
             <div className="prose" dangerouslySetInnerHTML={{ __html: serialized.content }} />
 
-            {/* Author card */}
             {serialized.authorBio && (
               <div className="mt-12 pt-8 border-t border-[#e5e0d8]">
                 <p className="text-xs font-mono uppercase tracking-widest text-[#6b7280] mb-2">
@@ -117,7 +116,6 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
             )}
 
-            {/* Tags */}
             {serialized.tags?.length > 0 && (
               <div className="mt-8 flex flex-wrap gap-2">
                 {serialized.tags.map((tag: string) => (
@@ -128,14 +126,12 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
             )}
 
-            {/* Share buttons */}
             <ShareButtons
               title={serialized.title}
               slug={serialized.slug}
               type="blog"
             />
 
-            {/* Comments */}
             <CommentSection
               postId={serialized._id}
               postType="blog"
@@ -150,4 +146,3 @@ export default async function BlogPostPage({ params }: Props) {
     </>
   );
 }
-          
