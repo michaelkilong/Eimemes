@@ -26,8 +26,8 @@ export default function Header() {
 
   return (
     <header className="relative">
-      {/* Top strip */}
-      <div className="bg-[#0f172a] border-b border-white/10">
+      {/* Top strip – no border, only background */}
+      <div className="bg-[#0f172a]">
         <div className="container flex items-center justify-between py-1.5">
           <span className="text-[11px] text-slate-400 font-mono tracking-wide uppercase">
             {/* optional tagline */}
@@ -36,8 +36,8 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Logo + hamburger row */}
-      <div className="border-b border-[#e5e0d8] shadow-sm">
+      {/* Logo + hamburger row – no border, just shadow */}
+      <div className="shadow-sm">
         <div className="container flex items-center justify-between py-5">
           <Link href="/" className="group flex items-center gap-3">
             <img
@@ -73,8 +73,8 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Desktop navigation – clean solid style */}
-      <nav className="hidden md:block sticky top-0 z-50 bg-white border-b border-[#e5e0d8] shadow-sm">
+      {/* Desktop navigation – no separator lines */}
+      <nav className="hidden md:block sticky top-0 z-50 bg-white shadow-sm">
         <div className="container flex items-center">
           <ul className="flex gap-0">
             {navLinks.map(({ href, label }) => {
@@ -83,10 +83,10 @@ export default function Header() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className={`block px-5 py-3.5 text-sm font-medium border-b-2 transition-colors duration-150 ${
+                    className={`block px-5 py-3.5 text-sm font-medium transition-colors duration-150 ${
                       active
-                        ? 'border-[#d97706] text-[#d97706]'
-                        : 'border-transparent text-[#1e293b] hover:text-[#d97706] hover:border-[#d97706]/30'
+                        ? 'border-b-2 border-[#d97706] text-[#d97706]'
+                        : 'border-b-2 border-transparent text-[#4b5563] hover:text-[#1e293b] hover:border-transparent'
                     }`}
                   >
                     {label}
@@ -98,18 +98,18 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* Mobile menu – clean solid dropdown */}
+      {/* Mobile menu – no separator lines */}
       {mobileOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 z-40 bg-white border-b border-[#e5e0d8] shadow-lg">
+        <div className="md:hidden absolute top-full left-0 right-0 z-40 bg-white shadow-lg">
           {navLinks.map(({ href, label }) => (
             <Link
               key={href}
               href={href}
               onClick={() => setMobileOpen(false)}
-              className={`block px-6 py-3 text-sm font-medium border-b border-[#f0ece4] transition-colors ${
+              className={`block px-6 py-3 text-sm font-medium transition-colors ${
                 pathname.startsWith(href)
                   ? 'text-[#d97706] bg-[#fef9e6]'
-                  : 'text-[#1e293b] hover:text-[#d97706] hover:bg-[#f8f7f4]'
+                  : 'text-[#1e293b] hover:text-[#0f172a] hover:bg-[#f8f7f4]'
               }`}
             >
               {label}
