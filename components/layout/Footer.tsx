@@ -1,9 +1,18 @@
+'use client';
 // components/layout/Footer.tsx
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Footer() {
+  const pathname = usePathname();
+  const isHome = pathname === '/';
+
   return (
-    <footer className="bg-[#0f172a] text-slate-400 mt-0">
+    <footer
+      className={`bg-[#0f172a] text-slate-400 ${
+        isHome ? 'mt-0' : 'mt-20'
+      }`}
+    >
       <div className="container py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-10 border-b border-slate-800">
           {/* Brand */}
@@ -22,6 +31,7 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               {[
                 { href: '/',          label: 'Home' },
+                { href: '/articles',  label: 'Articles' },
                 { href: '/blogs',     label: 'Opinion & Blogs' },
                 { href: '/gallery',   label: 'Gallery' },
                 { href: '/kuki-fc',   label: 'Kuki FC' },
@@ -55,7 +65,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Legal — moved up from bottom bar */}
+          {/* Legal */}
           <div>
             <h4 className="text-xs uppercase tracking-widest text-slate-500 mb-4 font-mono">Legal</h4>
             <ul className="space-y-2 text-sm">
@@ -78,7 +88,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar — now just copyright */}
         <div className="pt-6 text-center md:text-left text-xs text-slate-600">
           <span>© {new Date().getFullYear()} Eimemes Pvt Ltd. All rights reserved.</span>
         </div>
