@@ -8,8 +8,18 @@ import { ArrowLeft } from 'lucide-react';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 
 const EMPTY = {
-  opponent: '', branch: '', date: '', venue: '', competition: 'League',
-  isHome: true, status: 'upcoming', homeScore: '', awayScore: '', result: '', notes: '',
+  opponent: '',
+  opponentLogo: '',   // NEW
+  branch: '',
+  date: '',
+  venue: '',
+  competition: 'League',
+  isHome: true,
+  status: 'upcoming',
+  homeScore: '',
+  awayScore: '',
+  result: '',
+  notes: '',
 };
 
 export default function NewFixturePage() {
@@ -27,7 +37,10 @@ export default function NewFixturePage() {
     setForm(f => ({ ...f, [k]: e.target.value }));
 
   const handleSave = async () => {
-    if (!form.opponent || !form.branch || !form.date) { toast.error('Opponent, branch and date required'); return; }
+    if (!form.opponent || !form.branch || !form.date) {
+      toast.error('Opponent, branch and date required');
+      return;
+    }
     setSaving(true);
     try {
       const payload = {
@@ -37,15 +50,19 @@ export default function NewFixturePage() {
         result: form.result || null,
       };
       const res = await fetch('/api/kuki-fc/fixtures', {
-        method: 'POST', credentials: 'include',
+        method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error((await res.json()).error);
       toast.success('Fixture added!');
       router.push('/control-panel-92x/kuki-fc/fixtures');
-    } catch (err: any) { toast.error(err.message); }
-    finally { setSaving(false); }
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const inputClass = `w-full bg-[#13171f] border border-[#2a2f3d] rounded-sm px-4 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-[#d97706] transition-all font-mono`;
@@ -71,6 +88,14 @@ export default function NewFixturePage() {
               <label className={labelClass}>Opponent *</label>
               <input className={inputClass} placeholder="Valley Warriors FC" value={form.opponent} onChange={set('opponent')} />
             </div>
+
+            {/* NEW: Opponent Logo URL */}
+            <div>
+              <label className={labelClass}>Opponent Logo URL</label>
+              <input className={inputClass} placeholder="https://imgbb.com/logo.png" value={form.opponentLogo} onChange={set('opponentLogo')} />
+              <p className="text-[10px] text-slate-600 mt-1 font-mono">Optional — small square image of the opponent's badge</p>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className={labelClass}>Branch *</label>
@@ -148,4 +173,3 @@ export default function NewFixturePage() {
     </div>
   );
 }
-
