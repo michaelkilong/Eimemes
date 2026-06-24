@@ -2,7 +2,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MapPin, ShoppingBag, Users, Calendar } from 'lucide-react';
+import { MapPin, ShoppingBag, Users, Calendar, ChevronRight } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { connectDB } from '@/lib/mongodb';
@@ -152,13 +152,19 @@ export default async function KukiFCPage() {
                         {branch.description}
                       </p>
                     )}
-                    <div className="flex gap-4 text-xs font-mono text-[#6b7280]">
-                      {branch.stadium && (
-                        <span className="flex items-center gap-1">
-                          <MapPin size={10} /> {branch.stadium}
-                        </span>
-                      )}
-                      {branch.founded && <span>Est. {branch.founded}</span>}
+                    {/* Clue that this is a sub-page */}
+                    <div className="flex items-center justify-between text-xs font-mono text-[#6b7280] group-hover:text-[#d97706] transition-colors">
+                      <div className="flex gap-4">
+                        {branch.stadium && (
+                          <span className="flex items-center gap-1">
+                            <MapPin size={10} /> {branch.stadium}
+                          </span>
+                        )}
+                        {branch.founded && <span>Est. {branch.founded}</span>}
+                      </div>
+                      <span className="flex items-center gap-1 font-medium text-[#d97706] opacity-0 group-hover:opacity-100 transition-opacity">
+                        See details <ChevronRight size={12} />
+                      </span>
                     </div>
                   </div>
                 </Link>
