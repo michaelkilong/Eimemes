@@ -7,7 +7,7 @@ import { Menu, X } from 'lucide-react';
 
 const navLinks = [
   { href: '/',          label: 'Home' },
-  { href: '/articles',  label: 'Articles' },   // NEW
+  { href: '/articles',  label: 'Articles' },
   { href: '/blogs',     label: 'Opinion' },
   { href: '/gallery',   label: 'Gallery' },
   { href: '/kuki-fc',   label: 'Kuki FC' },
@@ -39,9 +39,7 @@ export default function Header() {
       {/* Logo + hamburger row — with shadow and circular logo */}
       <div className="border-b border-[#e5e0d8] shadow-sm">
         <div className="container flex items-center justify-between py-5">
-          {/* Branding: circular logo + Eimemes text */}
           <Link href="/" className="group flex items-center gap-3">
-            {/* Circular logo, same height as heading */}
             <img
               src="https://i.ibb.co/PzfH7bDM/C5717-A91-2593-4374-961-E-76-E18-F1322-DD.jpg"
               alt="Eimemes Logo"
@@ -64,8 +62,6 @@ export default function Header() {
             >
               editorial@eimemes.com
             </a>
-
-            {/* Hamburger – visible only on mobile, placed here */}
             <button
               className="md:hidden p-2 rounded text-[#1e293b] hover:bg-[#f0ece4] transition-colors"
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -77,20 +73,20 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Desktop navigation – glassmorphism effect */}
-      <nav className="hidden md:block sticky top-0 z-50 backdrop-blur-md bg-white/70 border-t border-b border-white/20 shadow-sm">
-        <div className="container flex items-center">
-          <ul className="flex">
+      {/* Desktop navigation – glassmorphism, pill active style */}
+      <nav className="hidden md:block sticky top-0 z-50 backdrop-blur-xl bg-white/50 border-t border-b border-white/30 shadow-sm">
+        <div className="container flex items-center py-2">
+          <ul className="flex gap-1">
             {navLinks.map(({ href, label }) => {
               const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
               return (
                 <li key={href}>
                   <Link
                     href={href}
-                    className={`block px-5 py-3.5 text-sm font-medium border-b-2 transition-all duration-150 ${
+                    className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
                       active
-                        ? 'border-[#d97706] text-[#d97706] font-semibold'
-                        : 'border-transparent text-[#1e293b] hover:text-[#d97706] hover:border-[#d97706]'
+                        ? 'bg-[#0f172a]/10 text-[#0f172a] font-semibold'
+                        : 'text-[#4b5563] hover:text-[#0f172a] hover:bg-[#0f172a]/5'
                     }`}
                   >
                     {label}
@@ -102,21 +98,25 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* Mobile menu – glassmorphism dropdown */}
+      {/* Mobile menu – true glassmorphism dropdown with pill active */}
       {mobileOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 z-40 backdrop-blur-md bg-white/90 border-b border-white/20 shadow-lg">
-          {navLinks.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              onClick={() => setMobileOpen(false)}
-              className={`block px-6 py-3 text-sm font-medium border-b border-[#f0ece4] ${
-                pathname.startsWith(href) ? 'text-[#d97706] bg-[#fef9e6]' : 'text-[#1e293b]'
-              }`}
-            >
-              {label}
-            </Link>
-          ))}
+        <div className="md:hidden absolute top-full left-0 right-0 z-40 backdrop-blur-xl bg-white/60 border-b border-white/30 shadow-2xl rounded-b-lg mx-2 overflow-hidden">
+          <div className="p-2 space-y-1">
+            {navLinks.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setMobileOpen(false)}
+                className={`block px-4 py-2 text-sm font-medium rounded-full transition-colors ${
+                  pathname.startsWith(href)
+                    ? 'bg-[#0f172a]/10 text-[#0f172a] font-semibold'
+                    : 'text-[#4b5563] hover:text-[#0f172a] hover:bg-[#0f172a]/5'
+                }`}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
         </div>
       )}
     </header>
