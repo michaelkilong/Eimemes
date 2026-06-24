@@ -1,23 +1,31 @@
-// app/api/auth/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { connectDB } from '@/lib/mongodb';
 import { AdminUser } from '@/lib/models/index';
 import { signToken, requireAuth } from '@/lib/auth';
+import { rateLimit } from '@/lib/rateLimit';
+
+const LOGIN_LIMIT = 5;        // attempts
+const LOGIN_WINDOW = 15 * 60 * 1000; // 15 minutes
 
 export async function POST(req: NextRequest) {
+  // Rate limiting
+  if (!rateLimit(req, LOGIN_LIMIT, LOGIN_WINDOW)) {
+    return NextResponse.json({ error: 'Too many login attempts. Please try again later.' }, { status: 429 });
+  }
+
   try {
     const { email, password } = await req.json();
     if (!email || !password) return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
 
     await connectDB();
     const user = await AdminUser.findOne({ email: email.toLowerCase() }).select('+password');
-    if (!user) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    if (!user || !user.active) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
 
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
 
-    if (user.active === false) return NextResponse.json({ error: 'Account has been deactivated. Contact your super admin.' }, { status: 403 });
+    // No need for separate inactive message — already handled above
 
     user.lastLogin = new Date();
     await user.save();
@@ -32,7 +40,7 @@ export async function POST(req: NextRequest) {
     response.cookies.set('admin_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'strict',   // stronger
       maxAge: 60 * 60 * 24 * 7,
       path: '/',
     });
