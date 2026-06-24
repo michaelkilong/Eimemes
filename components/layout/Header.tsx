@@ -6,12 +6,13 @@ import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
 const navLinks = [
-  { href: '/',         label: 'Home' },
-  { href: '/blogs',    label: 'Opinion' },
-  { href: '/gallery',  label: 'Gallery' },
-  { href: '/kuki-fc',  label: 'Kuki FC' },
-  { href: '/about',    label: 'About' },
-  { href: '/contact',  label: 'Contact' },
+  { href: '/',          label: 'Home' },
+  { href: '/articles',  label: 'Articles' },   // NEW
+  { href: '/blogs',     label: 'Opinion' },
+  { href: '/gallery',   label: 'Gallery' },
+  { href: '/kuki-fc',   label: 'Kuki FC' },
+  { href: '/about',     label: 'About' },
+  { href: '/contact',   label: 'Contact' },
 ];
 
 export default function Header() {
