@@ -2,13 +2,7 @@ import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
 
-const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
-
-// Crash early if JWT_SECRET is missing
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable is not set');
-}
 
 export interface JWTPayload {
   userId: string;
@@ -17,8 +11,17 @@ export interface JWTPayload {
   name: string;
 }
 
+// Helper to get secret – crashes only when called, not at module load
+function getSecret(): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET environment variable is not set');
+  }
+  return secret;
+}
+
 export function signToken(payload: JWTPayload): string {
-  return jwt.sign(payload, JWT_SECRET as string, {
+  return jwt.sign(payload, getSecret(), {
     expiresIn: JWT_EXPIRES_IN,
     algorithm: 'HS256',
   });
@@ -26,7 +29,7 @@ export function signToken(payload: JWTPayload): string {
 
 export function verifyToken(token: string): JWTPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET as string, { algorithms: ['HS256'] }) as JWTPayload;
+    return jwt.verify(token, getSecret(), { algorithms: ['HS256'] }) as JWTPayload;
   } catch {
     return null;
   }
@@ -60,11 +63,17 @@ export function getServerSideAuth(): JWTPayload | null {
 }
 
 export function unauthorized() {
-  return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { 'Content-Type': 'application/json' } });
+  return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+    status: 401,
+    headers: { 'Content-Type': 'application/json' },
+  });
 }
 
 export function forbidden() {
-  return new Response(JSON.stringify({ error: 'Forbidden — insufficient permissions' }), { status: 403, headers: { 'Content-Type': 'application/json' } });
+  return new Response(JSON.stringify({ error: 'Forbidden — insufficient permissions' }), {
+    status: 403,
+    headers: { 'Content-Type': 'application/json' },
+  });
 }
 
 export function requireSuperAdmin(req: NextRequest): JWTPayload | null {
