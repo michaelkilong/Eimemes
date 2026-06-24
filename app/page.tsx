@@ -13,9 +13,10 @@ export default function HomePage() {
   return (
     <>
       <Header />
+      {/* Full‑height flex container */}
       <main className="flex flex-col min-h-screen">
-        {/* Hero section that fills available space */}
-        <section className="relative flex-1 flex items-center bg-[#0f172a] text-white overflow-hidden">
+        {/* Hero fills all available space between header and footer */}
+        <section className="flex-1 relative bg-[#0f172a] text-white overflow-hidden flex items-center">
           {/* Background image */}
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -24,12 +25,11 @@ export default function HomePage() {
                 "url('https://i.ibb.co/TqdxHX30/19-E99952-7134-413-C-A16-A-B9828878-C15-C.webp')",
             }}
           />
-
           {/* Fading gradient overlays */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/30" />
           <div className="absolute inset-0 bg-black/20" />
 
-          {/* Content */}
+          {/* Content – vertically centered */}
           <div className="container relative z-10 text-center max-w-4xl mx-auto py-16">
             <p className="text-[#d97706] font-mono text-xs uppercase tracking-widest mb-5">
               Welcome to
