@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MapPin, Users, Calendar, ArrowLeft, ArrowRight } from 'lucide-react';
+import { MapPin, Users, Calendar, ArrowLeft, ArrowRight, Shield } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { connectDB } from '@/lib/mongodb';
@@ -56,11 +56,31 @@ export default async function BranchPage({ params }: Props) {
     loss: 'bg-red-500/15 text-red-400 border-red-500/20',
   };
 
+  // Helper component for a small team badge
+  const TeamLogo = ({ logo, name, className }: { logo?: string; name: string; className?: string }) => {
+    if (logo) {
+      return (
+        <Image
+          src={logo}
+          alt={name}
+          width={32}
+          height={32}
+          className={`object-contain ${className || ''}`}
+        />
+      );
+    }
+    return (
+      <div className={`w-8 h-8 rounded-full bg-[#f0ece4] flex items-center justify-center ${className || ''}`}>
+        <Shield size={16} className="text-[#6b7280]" />
+      </div>
+    );
+  };
+
   return (
     <>
       <Header />
       <main>
-        {/* Hero — lighter overlay so background image is visible */}
+        {/* Hero */}
         <div className="relative bg-[#0f172a] py-20">
           {branch.coverImage && (
             <>
@@ -127,7 +147,7 @@ export default async function BranchPage({ params }: Props) {
             {/* Main content */}
             <div className="lg:col-span-2 space-y-10">
 
-              {/* Squad preview */}
+              {/* Squad preview (unchanged) */}
               <div>
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="font-display text-2xl font-bold text-[#0f172a] pb-2 border-b-2 border-[#d97706] inline-block">
@@ -188,35 +208,85 @@ export default async function BranchPage({ params }: Props) {
                 )}
               </div>
 
-              {/* Recent results */}
+              {/* Recent results – new football-style layout */}
               {recent.length > 0 && (
                 <div>
                   <h2 className="font-display text-2xl font-bold text-[#0f172a] pb-2 border-b-2 border-[#d97706] inline-block mb-6">
                     Recent Results
                   </h2>
-                  <div className="space-y-3">
-                    {recent.map((fixture: any) => (
-                      <div key={fixture._id} className="bg-white border border-[#e5e0d8] rounded-sm p-4 flex items-center justify-between gap-4">
-                        <div>
-                          <p className="text-xs text-[#6b7280] font-mono mb-1">
-                            {new Date(fixture.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                            {' · '}{fixture.competition}
-                          </p>
-                          <p className="font-medium text-[#0f172a] text-sm">
-                            {fixture.isHome ? `Kuki FC ${params.branch.toUpperCase()}` : fixture.opponent}
-                            <span className="text-[#d97706] mx-2 font-bold">
-                              {fixture.homeScore ?? '-'} – {fixture.awayScore ?? '-'}
+                  <div className="space-y-4">
+                    {recent.map((fixture: any) => {
+                      const isHome = fixture.isHome;
+                      const homeTeam = isHome ? `Kuki FC ${params.branch}` : fixture.opponent;
+                      const awayTeam = isHome ? fixture.opponent : `Kuki FC ${params.branch}`;
+                      const homeLogo = isHome ? branch.logo : fixture.opponentLogo;
+                      const awayLogo = isHome ? fixture.opponentLogo : branch.logo;
+                      const score = `${fixture.homeScore ?? '-'} – ${fixture.awayScore ?? '-'}`;
+
+                      return (
+                        <div key={fixture._id} className="bg-white border border-[#e5e0d8] rounded-sm p-5">
+                          {/* Competition & date */}
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="text-[11px] font-mono uppercase tracking-widest text-[#d97706]">
+                              {fixture.competition}
                             </span>
-                            {fixture.isHome ? fixture.opponent : `Kuki FC ${params.branch.toUpperCase()}`}
-                          </p>
+                            <span className="text-[11px] text-[#6b7280] font-mono">
+                              {new Date(fixture.date).toLocaleDateString('en-GB', {
+                                day: 'numeric', month: 'short', year: 'numeric'
+                              })}
+                            </span>
+                          </div>
+
+                          {/* Teams & score */}
+                          <div className="flex items-center justify-between gap-4">
+                            {/* Home team */}
+                            <div className="flex items-center gap-2 min-w-0 flex-1 justify-end">
+                              <span className="text-xs font-semibold text-[#0f172a] truncate text-right leading-tight">
+                                {homeTeam}
+                              </span>
+                              <TeamLogo logo={homeLogo} name={homeTeam} className="w-7 h-7" />
+                            </div>
+
+                            {/* Score */}
+                            <div className="flex-shrink-0 text-center">
+                              <span className="inline-block font-display font-black text-xl text-[#0f172a] bg-[#f8f7f4] px-4 py-1 rounded-sm">
+                                {score}
+                              </span>
+                            </div>
+
+                            {/* Away team */}
+                            <div className="flex items-center gap-2 min-w-0 flex-1">
+                              <TeamLogo logo={awayLogo} name={awayTeam} className="w-7 h-7" />
+                              <span className="text-xs font-semibold text-[#0f172a] truncate leading-tight">
+                                {awayTeam}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Result badge & venue */}
+                          <div className="flex items-center justify-between mt-3">
+                            <div className="flex items-center gap-2">
+                              {fixture.result && (
+                                <span className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded-sm border font-bold ${resultColors[fixture.result]}`}>
+                                  {fixture.result}
+                                </span>
+                              )}
+                              {fixture.venue && (
+                                <span className="text-[10px] text-[#6b7280] font-mono flex items-center gap-1">
+                                  <MapPin size={9} /> {fixture.venue}
+                                </span>
+                              )}
+                            </div>
+                            <Link
+                              href={`/kuki-fc/${params.branch}/fixtures`}
+                              className="text-[10px] text-[#d97706] font-mono hover:underline"
+                            >
+                              Full fixtures →
+                            </Link>
+                          </div>
                         </div>
-                        {fixture.result && (
-                          <span className={`text-[10px] font-mono uppercase px-2 py-1 rounded-sm border font-bold ${resultColors[fixture.result]}`}>
-                            {fixture.result}
-                          </span>
-                        )}
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               )}
