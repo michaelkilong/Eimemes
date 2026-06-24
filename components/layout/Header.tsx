@@ -36,7 +36,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Logo + hamburger row — with shadow and circular logo */}
+      {/* Logo + hamburger row */}
       <div className="border-b border-[#e5e0d8] shadow-sm">
         <div className="container flex items-center justify-between py-5">
           <Link href="/" className="group flex items-center gap-3">
@@ -73,20 +73,20 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Desktop navigation – glassmorphism, pill active style */}
-      <nav className="hidden md:block sticky top-0 z-50 backdrop-blur-xl bg-white/50 border-t border-b border-white/30 shadow-sm">
-        <div className="container flex items-center py-2">
-          <ul className="flex gap-1">
+      {/* Desktop navigation – clean solid style */}
+      <nav className="hidden md:block sticky top-0 z-50 bg-white border-b border-[#e5e0d8] shadow-sm">
+        <div className="container flex items-center">
+          <ul className="flex gap-0">
             {navLinks.map(({ href, label }) => {
               const active = href === '/' ? pathname === '/' : pathname.startsWith(href);
               return (
                 <li key={href}>
                   <Link
                     href={href}
-                    className={`px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
+                    className={`block px-5 py-3.5 text-sm font-medium border-b-2 transition-colors duration-150 ${
                       active
-                        ? 'bg-[#0f172a]/10 text-[#0f172a] font-semibold'
-                        : 'text-[#4b5563] hover:text-[#0f172a] hover:bg-[#0f172a]/5'
+                        ? 'border-[#d97706] text-[#d97706]'
+                        : 'border-transparent text-[#1e293b] hover:text-[#d97706] hover:border-[#d97706]/30'
                     }`}
                   >
                     {label}
@@ -98,25 +98,23 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* Mobile menu – true glassmorphism dropdown with pill active */}
+      {/* Mobile menu – clean solid dropdown */}
       {mobileOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 z-40 backdrop-blur-xl bg-white/60 border-b border-white/30 shadow-2xl rounded-b-lg mx-2 overflow-hidden">
-          <div className="p-2 space-y-1">
-            {navLinks.map(({ href, label }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setMobileOpen(false)}
-                className={`block px-4 py-2 text-sm font-medium rounded-full transition-colors ${
-                  pathname.startsWith(href)
-                    ? 'bg-[#0f172a]/10 text-[#0f172a] font-semibold'
-                    : 'text-[#4b5563] hover:text-[#0f172a] hover:bg-[#0f172a]/5'
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
+        <div className="md:hidden absolute top-full left-0 right-0 z-40 bg-white border-b border-[#e5e0d8] shadow-lg">
+          {navLinks.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={() => setMobileOpen(false)}
+              className={`block px-6 py-3 text-sm font-medium border-b border-[#f0ece4] transition-colors ${
+                pathname.startsWith(href)
+                  ? 'text-[#d97706] bg-[#fef9e6]'
+                  : 'text-[#1e293b] hover:text-[#d97706] hover:bg-[#f8f7f4]'
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
         </div>
       )}
     </header>
