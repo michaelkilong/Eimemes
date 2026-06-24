@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
 
+const JWT_SECRET = process.env.JWT_SECRET!;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
 export interface JWTPayload {
@@ -11,36 +12,26 @@ export interface JWTPayload {
   name: string;
 }
 
-// Helper to get secret – crashes only when called, not at module load
-function getSecret(): string {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error('JWT_SECRET environment variable is not set');
-  }
-  return secret;
-}
-
 export function signToken(payload: JWTPayload): string {
-  return jwt.sign(payload, getSecret(), {
-    expiresIn: JWT_EXPIRES_IN,
-    algorithm: 'HS256',
-  });
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as jwt.SignOptions);
 }
 
 export function verifyToken(token: string): JWTPayload | null {
   try {
-    return jwt.verify(token, getSecret(), { algorithms: ['HS256'] }) as JWTPayload;
+    return jwt.verify(token, JWT_SECRET) as JWTPayload;
   } catch {
     return null;
   }
 }
 
 export function getTokenFromRequest(req: NextRequest): string | null {
+  // Check Authorization header first
   const authHeader = req.headers.get('authorization');
   if (authHeader?.startsWith('Bearer ')) {
     return authHeader.slice(7);
   }
 
+  // Then check cookie
   const cookieToken = req.cookies.get('admin_token')?.value;
   return cookieToken ?? null;
 }
@@ -63,17 +54,11 @@ export function getServerSideAuth(): JWTPayload | null {
 }
 
 export function unauthorized() {
-  return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-    status: 401,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return Response.json({ error: 'Unauthorized' }, { status: 401 });
 }
 
 export function forbidden() {
-  return new Response(JSON.stringify({ error: 'Forbidden — insufficient permissions' }), {
-    status: 403,
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return Response.json({ error: 'Forbidden — insufficient permissions' }, { status: 403 });
 }
 
 export function requireSuperAdmin(req: NextRequest): JWTPayload | null {
