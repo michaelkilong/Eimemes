@@ -1,22 +1,13 @@
-// app/api/auth/password/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { connectDB } from '@/lib/mongodb';
 import { AdminUser } from '@/lib/models/index';
 import { requireAuth, unauthorized } from '@/lib/auth';
-import { rateLimit } from '@/lib/rateLimit';
 
-const PASSWORD_LIMIT = 5;        // attempts
-const PASSWORD_WINDOW = 10 * 60 * 1000; // 10 minutes
-
+// PATCH /api/auth/password — change own password
 export async function PATCH(req: NextRequest) {
   const auth = requireAuth(req);
   if (!auth) return unauthorized();
-
-  // Rate limiting
-  if (!rateLimit(req, PASSWORD_LIMIT, PASSWORD_WINDOW)) {
-    return NextResponse.json({ error: 'Too many password change attempts. Please try again later.' }, { status: 429 });
-  }
 
   try {
     await connectDB();
@@ -51,6 +42,3 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
-
-    
-    
