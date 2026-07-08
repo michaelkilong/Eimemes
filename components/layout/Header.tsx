@@ -60,7 +60,7 @@ export default function Header() {
               href="mailto:editorial@eimemes.com"
               className="hidden md:inline-block text-xs text-[#6b7280] hover:text-[#d97706] transition-colors font-mono"
             >
-              editorial@eimemes.com
+              eimemeschatai@gmail.com
             </a>
             <button
               className="md:hidden p-2 rounded text-[#1e293b] hover:bg-[#f0ece4] transition-colors"
