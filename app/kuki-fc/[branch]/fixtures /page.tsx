@@ -8,11 +8,10 @@ import Footer from '@/components/layout/Footer';
 import { connectDB } from '@/lib/mongodb';
 import { Branch, Fixture } from '@/lib/models/KukiFC';
 
-type Props = { params: Promise<{ branch: string }> };
+type Props = { params: { branch: string } };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { branch } = await params;
-  return { title: `Fixtures — Kuki FC ${branch}` };
+  return { title: `Fixtures — Kuki FC ${params.branch}` };
 }
 
 export const revalidate = 60;
@@ -31,13 +30,15 @@ async function getData(slug: string) {
       upcoming: JSON.parse(JSON.stringify(upcoming)),
       completed: JSON.parse(JSON.stringify(completed)),
     };
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 export default async function FixturesPage({ params }: Props) {
-  const { branch: slug } = await params;
-  const data = await getData(slug);
+  const data = await getData(params.branch);
   if (!data) notFound();
+
   const { branch, upcoming, completed } = data;
 
   const resultStyles: Record<string, string> = {
@@ -46,7 +47,7 @@ export default async function FixturesPage({ params }: Props) {
     loss: 'bg-red-500/15 text-red-400 border border-red-500/20',
   };
 
-  const branchDisplayName = branch.name || (slug.charAt(0).toUpperCase() + slug.slice(1));
+  const branchDisplayName = branch.name || (params.branch.charAt(0).toUpperCase() + params.branch.slice(1));
 
   const FixtureRow = ({ fixture }: { fixture: any }) => (
     <div className="bg-white border border-[#e5e0d8] rounded-sm p-5">
@@ -116,7 +117,7 @@ export default async function FixturesPage({ params }: Props) {
       <main>
         <div className="bg-[#0f172a] py-16">
           <div className="container">
-            <Link href={`/kuki-fc/${slug}`}
+            <Link href={`/kuki-fc/${params.branch}`}
               className="inline-flex items-center gap-1.5 text-white/50 hover:text-white text-xs font-mono mb-5 transition-colors">
               <ArrowLeft size={12} /> {branch.name}
             </Link>
@@ -125,14 +126,14 @@ export default async function FixturesPage({ params }: Props) {
           </div>
         </div>
 
-        {/* Branch nav — Photos tab added */}
+        {/* Branch nav */}
         <div className="bg-white border-b border-[#e5e0d8]">
           <div className="container flex gap-0">
             {[
-              { href: `/kuki-fc/${slug}`, label: 'Overview' },
-              { href: `/kuki-fc/${slug}/squad`, label: 'Squad' },
-              { href: `/kuki-fc/${slug}/fixtures`, label: 'Fixtures' },
-              { href: `/kuki-fc/${slug}/photos`, label: 'Photos' },
+              { href: `/kuki-fc/${params.branch}`, label: 'Overview' },
+              { href: `/kuki-fc/${params.branch}/squad`, label: 'Squad' },
+              { href: `/kuki-fc/${params.branch}/fixtures`, label: 'Fixtures' },
+              { href: `/kuki-fc/${params.branch}/photos`, label: 'Photos' },
             ].map(({ href, label }) => (
               <Link key={href} href={href}
                 className={`px-5 py-3.5 text-sm font-medium border-b-2 transition-all ${
