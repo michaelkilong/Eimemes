@@ -38,7 +38,7 @@ export default function HomePage() {
               Eimemes
             </h1>
             <p className="text-slate-300 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto mb-10">
-              A digital platform built for and by Eimi youths. Founded in 2025 and wholly owned
+              A digital platform built for and by Eimi youths. Founded in 2021 and wholly owned
               by <strong>Eimeme Pvt Ltd</strong>, we exist to entertain, uplift, and connect a
               generation that deserves its own space on the internet. From memes that hit too
               close to home to content that genuinely guides and inspires — we cover what matters
