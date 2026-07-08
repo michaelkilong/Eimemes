@@ -5,7 +5,7 @@ import Footer from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
   title: 'About Eimemes',
-  description: 'Independent digital publication owned by Eimeme Pvt Ltd, Mumbai.',
+  description: 'Independent digital publication owned by Eimeme Pvt Ltd, UK.',
 };
 
 export default function AboutPage() {
@@ -21,7 +21,7 @@ export default function AboutPage() {
             <p className="text-slate-400 max-w-xl mx-auto leading-relaxed">
               "EIMEMES - bringing all Eimi Youths closer"
               <br />
-              Eimi te adim, Eimemes a um e!
+              Eimi te adin, Eimemes a um e!
             </p>
           </div>
         </div>
@@ -31,7 +31,7 @@ export default function AboutPage() {
           <div className="bg-white border border-[#e5e0d8] rounded-sm p-8 md:p-12 mb-8 animate-fade-up">
             <h2 className="font-display text-3xl font-bold text-[#0f172a] mb-6">Our Mission</h2>
             <p className="text-[#2d2926] leading-relaxed mb-5 text-lg">
-              <strong>Eimemes</strong> is a digital platform built for and by Eimi youths. Founded in 2025 and wholly owned by{' '}
+              <strong>Eimemes</strong> is a digital platform built for and by Eimi youths. Founded in 2021 and wholly owned by{' '}
               <strong>Eimeme Pvt Ltd</strong>, we exist to entertain, uplift, and connect a generation that deserves its own space on the internet.
             </p>
             <p className="text-[#4b4540] leading-relaxed mb-5">
