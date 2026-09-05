@@ -2,7 +2,7 @@
 import { connectDB } from '@/lib/mongodb';
 import { Comment } from '@/lib/models/index';
 import { revalidatePath } from 'next/cache';
-import { sanitizeHTML, sanitizeEmail } from '@/lib/sanitizer';
+import { sanitizeEmail } from '@/lib/sanitizer';
 import { validateComment, validateEmail } from '@/lib/validators';
 
 export async function submitComment(formData: FormData) {
@@ -41,15 +41,13 @@ export async function submitComment(formData: FormData) {
       return { error: 'Invalid email address' };
     }
 
-    // Sanitize comment HTML to prevent XSS
-    const sanitizedComment = sanitizeHTML(comment);
-
     await connectDB();
 
+    // Store comment as-is - sanitize on client-side when displaying
     await Comment.create({
       name: name.substring(0, 100),
       email: sanitized,
-      comment: sanitizedComment,
+      comment: comment,  // Store raw comment, sanitize on client
       postId,
       postType,
       postSlug,
