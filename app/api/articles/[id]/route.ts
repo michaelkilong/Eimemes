@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import Article from '@/lib/models/Article';
 import { requireAuth, unauthorized, forbidden } from '@/lib/auth';
+import { filterArticleInput, validateCategory } from '@/lib/validators';
 
 type Params = { params: { id: string } };
 
@@ -19,7 +20,9 @@ export async function GET(req: NextRequest, { params }: Params) {
         ? await Article.findById(id)
         : await Article.findOne({ slug: id });
 
-    if (!article) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    if (!article) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
     if (!isAdmin && article.status !== 'published') {
       return NextResponse.json({ error: 'Not found' }, { status: 404 });
     }
@@ -43,13 +46,33 @@ export async function PUT(req: NextRequest, { params }: Params) {
     await connectDB();
     const body = await req.json();
 
+    // Filter input to only allowed fields
+    const filteredBody = filterArticleInput(body, auth.role === 'superadmin');
+
+    if (Object.keys(filteredBody).length === 0) {
+      return NextResponse.json(
+        { error: 'No valid fields to update' },
+        { status: 400 }
+      );
+    }
+
+    // Validate category if provided
+    if (filteredBody.category && !validateCategory(filteredBody.category)) {
+      return NextResponse.json(
+        { error: 'Invalid category' },
+        { status: 400 }
+      );
+    }
+
     const article = await Article.findByIdAndUpdate(
       params.id,
-      { ...body, updatedAt: new Date() },
+      { ...filteredBody, updatedAt: new Date() },
       { new: true, runValidators: true }
     );
 
-    if (!article) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    if (!article) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
     return NextResponse.json({ article });
   } catch (err) {
     console.error('[ARTICLE PUT]', err);
@@ -66,7 +89,9 @@ export async function DELETE(req: NextRequest, { params }: Params) {
   try {
     await connectDB();
     const article = await Article.findByIdAndDelete(params.id);
-    if (!article) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    if (!article) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error('[ARTICLE DELETE]', err);

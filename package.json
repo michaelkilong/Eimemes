@@ -16,6 +16,7 @@
     "mongoose": "^8.4.0",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2",
+    "isomorphic-dompurify": "^2.11.0",
     "@tiptap/react": "^2.4.0",
     "@tiptap/starter-kit": "^2.4.0",
     "@tiptap/extension-image": "^2.4.0",

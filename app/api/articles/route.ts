@@ -4,6 +4,7 @@ import slugify from 'slugify';
 import { connectDB } from '@/lib/mongodb';
 import Article from '@/lib/models/Article';
 import { requireAuth, unauthorized } from '@/lib/auth';
+import { escapeRegex, validateCategory } from '@/lib/validators';
 
 // GET /api/articles — public: published only; admin: all
 export async function GET(req: NextRequest) {
@@ -11,22 +12,26 @@ export async function GET(req: NextRequest) {
     await connectDB();
 
     const { searchParams } = new URL(req.url);
-    const page     = parseInt(searchParams.get('page') || '1');
-    const limit    = parseInt(searchParams.get('limit') || '12');
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '12');
     const category = searchParams.get('category') || '';
     const featured = searchParams.get('featured') === 'true';
-    const status   = searchParams.get('status') || '';
-    const isAdmin  = !!requireAuth(req);
+    const status = searchParams.get('status') || '';
+    const isAdmin = !!requireAuth(req);
 
     const query: Record<string, unknown> = {};
 
     if (!isAdmin) query.status = 'published';
     else if (status) query.status = status;
 
-    if (category) query.category = { $regex: category, $options: 'i' };
-    if (featured)  query.featured = true;
+    // Use escaped regex to prevent ReDoS
+    if (category) {
+      const escapedCategory = escapeRegex(category);
+      query.category = { $regex: escapedCategory, $options: 'i' };
+    }
+    if (featured) query.featured = true;
 
-    const skip  = (page - 1) * limit;
+    const skip = (page - 1) * limit;
     const total = await Article.countDocuments(query);
     const articles = await Article.find(query)
       .sort({ publishedAt: -1, createdAt: -1 })
@@ -53,6 +58,22 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
     const body = await req.json();
+
+    // Validate required fields
+    if (!body.title || !body.content || !body.summary) {
+      return NextResponse.json(
+        { error: 'Title, summary, and content are required' },
+        { status: 400 }
+      );
+    }
+
+    // Validate category
+    if (body.category && !validateCategory(body.category)) {
+      return NextResponse.json(
+        { error: 'Invalid category' },
+        { status: 400 }
+      );
+    }
 
     const slug = slugify(body.slug || body.title, { lower: true, strict: true });
 

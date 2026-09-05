@@ -2,35 +2,58 @@
 import { connectDB } from '@/lib/mongodb';
 import { Comment } from '@/lib/models/index';
 import { revalidatePath } from 'next/cache';
+import { sanitizeHTML, sanitizeEmail } from '@/lib/sanitizer';
+import { validateComment, validateEmail } from '@/lib/validators';
 
 export async function submitComment(formData: FormData) {
   try {
-    const name      = formData.get('name')?.toString().trim();
-    const email     = formData.get('email')?.toString().trim();
-    const comment   = formData.get('comment')?.toString().trim();
-    const postId    = formData.get('postId')?.toString();
-    const postType  = formData.get('postType')?.toString();
-    const postSlug  = formData.get('postSlug')?.toString();
+    const name = formData.get('name')?.toString().trim();
+    const email = formData.get('email')?.toString().trim();
+    const comment = formData.get('comment')?.toString().trim();
+    const postId = formData.get('postId')?.toString();
+    const postType = formData.get('postType')?.toString();
+    const postSlug = formData.get('postSlug')?.toString();
     const postTitle = formData.get('postTitle')?.toString();
 
+    // Validate all required fields
     if (!name || !email || !comment) {
       return { error: 'Name, email and comment are required' };
     }
 
-    if (comment.length > 1000) {
-      return { error: 'Comment too long (max 1000 characters)' };
+    if (name.length < 2 || name.length > 100) {
+      return { error: 'Name must be between 2 and 100 characters' };
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    // Validate email format
+    if (!validateEmail(email)) {
       return { error: 'Invalid email address' };
     }
+
+    // Validate comment length and content
+    const commentValidation = validateComment(comment);
+    if (!commentValidation.valid) {
+      return { error: commentValidation.error };
+    }
+
+    // Sanitize email
+    const sanitized = sanitizeEmail(email);
+    if (!sanitized) {
+      return { error: 'Invalid email address' };
+    }
+
+    // Sanitize comment HTML to prevent XSS
+    const sanitizedComment = sanitizeHTML(comment);
 
     await connectDB();
 
     await Comment.create({
-      name, email, comment,
-      postId, postType, postSlug, postTitle,
+      name: name.substring(0, 100),
+      email: sanitized,
+      comment: sanitizedComment,
+      postId,
+      postType,
+      postSlug,
+      postTitle,
     });
 
     revalidatePath(`/article/${postSlug}`);
@@ -55,4 +78,3 @@ export async function getComments(postId: string) {
     return [];
   }
 }
-  
