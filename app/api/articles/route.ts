@@ -4,7 +4,8 @@ import slugify from 'slugify';
 import { connectDB } from '@/lib/mongodb';
 import Article from '@/lib/models/Article';
 import { requireAuth, unauthorized } from '@/lib/auth';
-import { escapeRegex, validateCategory } from '@/lib/validators';
+import { escapeRegex } from '@/lib/sanitizer';
+import { validateCategory } from '@/lib/validators';
 
 // GET /api/articles — public: published only; admin: all
 export async function GET(req: NextRequest) {
