@@ -2,14 +2,21 @@ import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 import { NextRequest } from 'next/server';
 
-const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
+
+// Validate required environment variables at startup
+if (!JWT_SECRET) {
+  throw new Error('CRITICAL: JWT_SECRET environment variable is not defined');
+}
 
 export interface JWTPayload {
   userId: string;
   email: string;
   role: 'superadmin' | 'writer';
   name: string;
+  iat?: number;
+  exp?: number;
 }
 
 export function signToken(payload: JWTPayload): string {
@@ -19,13 +26,14 @@ export function signToken(payload: JWTPayload): string {
 export function verifyToken(token: string): JWTPayload | null {
   try {
     return jwt.verify(token, JWT_SECRET) as JWTPayload;
-  } catch {
+  } catch (error) {
+    // Silently fail - invalid or expired token
     return null;
   }
 }
 
 export function getTokenFromRequest(req: NextRequest): string | null {
-  // Check Authorization header first
+  // Check Authorization header first (Bearer token)
   const authHeader = req.headers.get('authorization');
   if (authHeader?.startsWith('Bearer ')) {
     return authHeader.slice(7);

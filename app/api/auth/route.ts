@@ -3,25 +3,70 @@ import bcrypt from 'bcryptjs';
 import { connectDB } from '@/lib/mongodb';
 import { AdminUser } from '@/lib/models/index';
 import { signToken, requireAuth } from '@/lib/auth';
+import { rateLimit, rateLimitResponse } from '@/lib/rateLimiter';
+import { sanitizeEmail } from '@/lib/sanitizer';
 
 export async function POST(req: NextRequest) {
+  // Rate limiting: max 5 attempts per minute per IP
+  const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+  const limiter = rateLimit(`auth:${ip}`, 5, 60000);
+  if (!limiter.success) {
+    return rateLimitResponse(limiter.remaining);
+  }
+
   try {
     const { email, password } = await req.json();
-    if (!email || !password) return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
+
+    // Input validation
+    if (!email || !password) {
+      return NextResponse.json(
+        { error: 'Email and password are required' },
+        { status: 400 }
+      );
+    }
+
+    // Sanitize email
+    const sanitized = sanitizeEmail(email);
+    if (!sanitized) {
+      return NextResponse.json(
+        { error: 'Invalid email format' },
+        { status: 400 }
+      );
+    }
 
     await connectDB();
-    const user = await AdminUser.findOne({ email: email.toLowerCase() }).select('+password');
-    if (!user) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    const user = await AdminUser.findOne({ email: sanitized }).select('+password');
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Invalid credentials' },
+        { status: 401 }
+      );
+    }
 
     const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    if (!isValid) {
+      return NextResponse.json(
+        { error: 'Invalid credentials' },
+        { status: 401 }
+      );
+    }
 
-    if (user.active === false) return NextResponse.json({ error: 'Account has been deactivated. Contact your super admin.' }, { status: 403 });
+    if (user.active === false) {
+      return NextResponse.json(
+        { error: 'Account has been deactivated. Contact your super admin.' },
+        { status: 403 }
+      );
+    }
 
     user.lastLogin = new Date();
     await user.save();
 
-    const token = signToken({ userId: user._id.toString(), email: user.email, role: user.role, name: user.name });
+    const token = signToken({
+      userId: user._id.toString(),
+      email: user.email,
+      role: user.role,
+      name: user.name,
+    });
 
     const response = NextResponse.json({
       success: true,
@@ -31,8 +76,8 @@ export async function POST(req: NextRequest) {
     response.cookies.set('admin_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 7,
+      sameSite: 'strict', // Changed from 'lax' to 'strict' for CSRF protection
+      maxAge: 60 * 60 * 24 * 7, // 7 days
       path: '/',
     });
 
@@ -51,6 +96,8 @@ export async function DELETE() {
 
 export async function GET(req: NextRequest) {
   const payload = requireAuth(req);
-  if (!payload) return NextResponse.json({ authenticated: false }, { status: 401 });
+  if (!payload) {
+    return NextResponse.json({ authenticated: false }, { status: 401 });
+  }
   return NextResponse.json({ authenticated: true, user: payload });
 }

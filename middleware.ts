@@ -1,5 +1,6 @@
 // middleware.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyToken } from '@/lib/auth';
 
 const ADMIN_PREFIX = '/control-panel-92x';
 
@@ -32,14 +33,9 @@ function handleAdminAuth(req: NextRequest): NextResponse | null {
   }
 
   try {
-    const parts = token.split('.');
-    if (parts.length !== 3) throw new Error('Invalid token');
-
-    const payload = JSON.parse(
-      Buffer.from(parts[1], 'base64').toString('utf-8')
-    );
-
-    if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) {
+    // Use proper JWT verification instead of manual parsing
+    const payload = verifyToken(token);
+    if (!payload) {
       const res = NextResponse.redirect(new URL(ADMIN_PREFIX, req.url));
       res.cookies.delete('admin_token');
       return res;
@@ -79,7 +75,7 @@ function handleCORS(req: NextRequest): NextResponse | null {
   }
 
   response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-CSRF-Token');
 
   if (req.method === 'OPTIONS') {
     return new NextResponse(null, { status: 204, headers: response.headers });
