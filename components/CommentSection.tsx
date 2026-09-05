@@ -1,5 +1,5 @@
 'use client';
-import { useState, useTransition, useEffect } from 'react';
+import { useState, useTransition } from 'react';
 import { MessageCircle, Send, Clock } from 'lucide-react';
 import { submitComment } from '@/app/actions/comments';
 
@@ -20,55 +20,24 @@ interface Props {
 
 const timeAgo = (dateStr: string) => {
   try {
-    const diff = Date.now() - new Date(dateStr).getTime();
-    const mins = Math.floor(diff / 60000);
+    const diff  = Date.now() - new Date(dateStr).getTime();
+    const mins  = Math.floor(diff / 60000);
     const hours = Math.floor(diff / 3600000);
-    const days = Math.floor(diff / 86400000);
-    if (mins < 1) return 'just now';
-    if (mins < 60) return `${mins}m ago`;
+    const days  = Math.floor(diff / 86400000);
+    if (mins < 1)   return 'just now';
+    if (mins < 60)  return `${mins}m ago`;
     if (hours < 24) return `${hours}h ago`;
     return `${days}d ago`;
-  } catch {
-    return '';
-  }
+  } catch { return ''; }
 };
 
-// Client-side sanitization component
-function SanitizedComment({ comment }: { comment: string }) {
-  const [sanitized, setSanitized] = useState('');
-
-  useEffect(() => {
-    // Only import DOMPurify on client side
-    import('isomorphic-dompurify').then((DOMPurify) => {
-      const clean = DOMPurify.default.sanitize(comment, {
-        ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br'],
-        ALLOWED_ATTR: ['href', 'title', 'target'],
-      });
-      setSanitized(clean);
-    });
-  }, [comment]);
-
-  if (!sanitized) return null;
-
-  return (
-    <div
-      className="text-sm text-[#4b4540] leading-relaxed prose-sm"
-      dangerouslySetInnerHTML={{ __html: sanitized }}
-    />
-  );
-}
-
 export default function CommentSection({
-  postId,
-  postType,
-  postSlug,
-  postTitle,
-  initialComments,
+  postId, postType, postSlug, postTitle, initialComments,
 }: Props) {
-  const [comments, setComments] = useState<Comment[]>(initialComments);
+  const [comments, setComments]      = useState<Comment[]>(initialComments);
   const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [error, setError]            = useState('');
+  const [success, setSuccess]        = useState(false);
   const [form, setForm] = useState({ name: '', email: '', comment: '' });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,24 +45,13 @@ export default function CommentSection({
     setError('');
     setSuccess(false);
 
-    // Client-side validation
-    if (!form.name.trim() || !form.email.trim() || !form.comment.trim()) {
-      setError('All fields are required');
-      return;
-    }
-
-    if (form.comment.length > 1000) {
-      setError('Comment must be 1000 characters or less');
-      return;
-    }
-
     const formData = new FormData();
-    formData.append('name', form.name);
-    formData.append('email', form.email);
-    formData.append('comment', form.comment);
-    formData.append('postId', postId);
-    formData.append('postType', postType);
-    formData.append('postSlug', postSlug);
+    formData.append('name',      form.name);
+    formData.append('email',     form.email);
+    formData.append('comment',   form.comment);
+    formData.append('postId',    postId);
+    formData.append('postType',  postType);
+    formData.append('postSlug',  postSlug);
     formData.append('postTitle', postTitle);
 
     startTransition(async () => {
@@ -133,78 +91,126 @@ export default function CommentSection({
         </h2>
       </div>
 
-      {/* Comment form */}
-      <form onSubmit={handleSubmit} className="bg-[#f9f7f4] p-6 rounded-sm border border-[#e5e0d8] mb-10">
-        <h3 className="font-display text-lg font-bold text-[#0f172a] mb-4">Leave a comment</h3>
+      <div className="bg-[#f8f7f4] border border-[#e5e0d8] rounded-sm p-6 mb-10">
+        <h3 className="font-display text-lg font-bold text-[#0f172a] mb-5">
+          Leave a comment
+        </h3>
 
-        {error && <div className="bg-red-50 text-red-700 p-3 rounded-sm mb-4 text-sm">{error}</div>}
-        {success && <div className="bg-green-50 text-green-700 p-3 rounded-sm mb-4 text-sm">✓ Comment posted!</div>}
-
-        <div className="space-y-4">
-          <input
-            type="text"
-            placeholder="Your name"
-            value={form.name}
-            onChange={e => setForm({ ...form, name: e.target.value })}
-            className={inputClass}
-            disabled={isPending}
-            maxLength={100}
-          />
-
-          <input
-            type="email"
-            placeholder="your@email.com"
-            value={form.email}
-            onChange={e => setForm({ ...form, email: e.target.value })}
-            className={inputClass}
-            disabled={isPending}
-          />
-
-          <textarea
-            placeholder="Your comment (max 1000 characters)..."
-            value={form.comment}
-            onChange={e => setForm({ ...form, comment: e.target.value })}
-            className={`${inputClass} resize-none`}
-            rows={4}
-            disabled={isPending}
-            maxLength={1000}
-          />
-
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-[#6b7280]">
-              {form.comment.length}/1000
-            </span>
-            <button
-              type="submit"
-              disabled={isPending}
-              className="flex items-center gap-2 bg-[#d97706] hover:bg-[#b45309] disabled:bg-[#d1d5db] text-white px-6 py-2.5 rounded-sm font-medium transition-colors"
-            >
-              <Send size={16} />
-              {isPending ? 'Posting...' : 'Post Comment'}
-            </button>
+        {success && (
+          <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-sm text-emerald-700 text-sm font-mono">
+            ✅ Comment posted successfully!
           </div>
-        </div>
-      </form>
+        )}
 
-      {/* Comments list */}
-      <div className="space-y-4">
-        {comments.length === 0 ? (
-          <p className="text-center py-8 text-[#6b7280]">No comments yet. Be the first to comment!</p>
-        ) : (
-          comments.map(comment => (
-            <div key={comment._id} className="bg-white border border-[#e5e0d8] rounded-sm p-4">
-              <div className="flex items-start justify-between mb-2">
-                <h4 className="font-semibold text-[#0f172a]">{comment.name}</h4>
-                <div className="flex items-center gap-1 text-xs text-[#6b7280]">
-                  <Clock size={12} />
-                  {timeAgo(comment.createdAt)}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-sm text-red-700 text-sm font-mono">
+            ❌ {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-[10px] font-mono uppercase tracking-widest text-[#6b7280] mb-1.5">
+                Name *
+              </label>
+              <input
+                className={inputClass}
+                placeholder="Your name"
+                value={form.name}
+                onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                required
+                disabled={isPending}
+              />
+            </div>
+            <div>
+              <label className="block text-[10px] font-mono uppercase tracking-widest text-[#6b7280] mb-1.5">
+                Email * (not published)
+              </label>
+              <input
+                type="email"
+                className={inputClass}
+                placeholder="your@email.com"
+                value={form.email}
+                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                required
+                disabled={isPending}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-mono uppercase tracking-widest text-[#6b7280] mb-1.5">
+              Comment *
+            </label>
+            <textarea
+              className={`${inputClass} resize-none`}
+              rows={4}
+              placeholder="Share your thoughts..."
+              value={form.comment}
+              onChange={e => setForm(f => ({ ...f, comment: e.target.value }))}
+              maxLength={1000}
+              required
+              disabled={isPending}
+            />
+            <p className="text-[10px] text-[#9ca3af] font-mono mt-1 text-right">
+              {form.comment.length}/1000
+            </p>
+          </div>
+
+          <button
+            type="submit"
+            disabled={isPending}
+            className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isPending ? (
+              <span className="flex items-center gap-2">
+                <span className="animate-spin h-4 w-4 border-2 border-white/30 border-t-white rounded-full" />
+                Posting...
+              </span>
+            ) : (
+              <span className="flex items-center gap-2">
+                <Send size={14} /> Post Comment
+              </span>
+            )}
+          </button>
+        </form>
+      </div>
+
+      {comments.length === 0 ? (
+        <div className="text-center py-12 bg-[#f8f7f4] border border-[#e5e0d8] rounded-sm">
+          <MessageCircle size={32} className="text-[#d4cfc7] mx-auto mb-3" />
+          <p className="font-display text-lg text-[#0f172a] mb-1">No comments yet</p>
+          <p className="text-sm text-[#6b7280]">Be the first to share your thoughts.</p>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {comments.map((c, i) => (
+            <div
+              key={c._id}
+              className="bg-white border border-[#e5e0d8] rounded-sm p-5 animate-fade-up"
+              style={{ animationDelay: `${i * 50}ms` }}
+            >
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-9 h-9 rounded-sm bg-[#0f172a] flex items-center justify-center flex-shrink-0">
+                  <span className="text-white font-display font-bold text-sm">
+                    {c.name.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#0f172a]">{c.name}</p>
+                  <p className="text-[11px] text-[#6b7280] font-mono flex items-center gap-1">
+                    <Clock size={10} /> {timeAgo(c.createdAt)}
+                  </p>
                 </div>
               </div>
-              <SanitizedComment comment={comment.comment} />
+              <p className="text-sm text-[#2d2926] leading-relaxed pl-12">
+                {c.comment}
+              </p>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
