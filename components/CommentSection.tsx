@@ -1,8 +1,7 @@
 'use client';
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import { MessageCircle, Send, Clock } from 'lucide-react';
 import { submitComment } from '@/app/actions/comments';
-import DOMPurify from 'isomorphic-dompurify';
 
 interface Comment {
   _id: string;
@@ -33,6 +32,31 @@ const timeAgo = (dateStr: string) => {
     return '';
   }
 };
+
+// Client-side sanitization component
+function SanitizedComment({ comment }: { comment: string }) {
+  const [sanitized, setSanitized] = useState('');
+
+  useEffect(() => {
+    // Only import DOMPurify on client side
+    import('isomorphic-dompurify').then((DOMPurify) => {
+      const clean = DOMPurify.default.sanitize(comment, {
+        ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br'],
+        ALLOWED_ATTR: ['href', 'title', 'target'],
+      });
+      setSanitized(clean);
+    });
+  }, [comment]);
+
+  if (!sanitized) return null;
+
+  return (
+    <div
+      className="text-sm text-[#4b4540] leading-relaxed prose-sm"
+      dangerouslySetInnerHTML={{ __html: sanitized }}
+    />
+  );
+}
 
 export default function CommentSection({
   postId,
@@ -176,15 +200,7 @@ export default function CommentSection({
                   {timeAgo(comment.createdAt)}
                 </div>
               </div>
-              <div
-                className="text-sm text-[#4b4540] leading-relaxed prose-sm"
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(comment.comment, {
-                    ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'a', 'p', 'br'],
-                    ALLOWED_ATTR: ['href', 'title', 'target'],
-                  }),
-                }}
-              />
+              <SanitizedComment comment={comment.comment} />
             </div>
           ))
         )}
